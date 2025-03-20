@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import React, { useState } from "react";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import {
   Container,
   Box,
-  Typography,
   TextField,
   Button,
-  Grid,
+  Typography,
   Paper,
+  Link,
+  Divider,
+  InputAdornment,
+  IconButton,
+  Snackbar,
   Alert,
-} from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+} from "@mui/material";
+import { useAuth } from "./AuthContext";
+
+// Icons
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import LockIcon from "@mui/icons-material/Lock";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
   const navigate = useNavigate();
+  const { signIn } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setError(null);
 
     try {
+      // In a real app, this would authenticate with AWS Cognito
       await signIn(email, password);
-      navigate('/');
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+      navigate("/");
+    } catch (err) {
+      setError("Invalid email or password. Please try again.");
+      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
@@ -40,46 +51,52 @@ const Login: React.FC = () => {
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
         }}
       >
         <Paper
           elevation={3}
           sx={{
-            padding: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
+            p: 4,
+            borderRadius: 2,
+            width: "100%",
           }}
         >
           <Box
             sx={{
-              backgroundColor: 'primary.main',
-              color: 'white',
-              borderRadius: '50%',
-              width: 40,
-              height: 40,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              mb: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              mb: 3,
             }}
           >
-            <LockOutlinedIcon />
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                borderRadius: "50%",
+                bgcolor: "primary.main",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mb: 2,
+              }}
+            >
+              <LockIcon sx={{ color: "white", fontSize: 32 }} />
+            </Box>
+            <Typography component="h1" variant="h5" fontWeight="bold">
+              Log In
+            </Typography>
+            <Typography color="text.secondary" variant="body2" mt={1}>
+              Enter your credentials to access your account
+            </Typography>
           </Box>
-          <Typography component="h1" variant="h5">
-            Sign in to SafetyPin.cloud
-          </Typography>
-          {error && (
-            <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-              {error}
-            </Alert>
-          )}
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+
+          <Box component="form" onSubmit={handleLogin} noValidate>
             <TextField
               margin="normal"
               required
@@ -91,6 +108,7 @@ const Login: React.FC = () => {
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              sx={{ mb: 2 }}
             />
             <TextField
               margin="normal"
@@ -98,40 +116,91 @@ const Login: React.FC = () => {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 2 }}
             />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                mb: 3,
+              }}
+            >
+              <Link
+                component={RouterLink}
+                to="/forgot-password"
+                variant="body2"
+                underline="hover"
+              >
+                Forgot password?
+              </Link>
+            </Box>
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              size="large"
               disabled={loading}
+              sx={{ mb: 3, py: 1.5 }}
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
-                  <Typography variant="body2" color="primary">
-                    Forgot password?
-                  </Typography>
+            <Divider sx={{ my: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                OR
+              </Typography>
+            </Divider>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mt: 2,
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                Don't have an account?{" "}
+                <Link
+                  component={RouterLink}
+                  to="/register"
+                  variant="body2"
+                  fontWeight="bold"
+                  underline="hover"
+                >
+                  Sign Up
                 </Link>
-              </Grid>
-              <Grid item>
-                <Link to="/register" style={{ textDecoration: 'none' }}>
-                  <Typography variant="body2" color="primary">
-                    {"Don't have an account? Sign Up"}
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
+              </Typography>
+            </Box>
           </Box>
         </Paper>
       </Box>
+
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={() => setError(null)} severity="error" sx={{ width: "100%" }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
