@@ -1,14 +1,15 @@
 # SafetyPin Cloud
 
-SafetyPin Cloud is a secure file transfer service that lets you create and manage SFTP servers in the cloud.
+SafetyPin Cloud is a secure file transfer solution that enables clients to transfer files to Amazon S3 buckets through ephemeral SFTP connections without requiring them to maintain their own servers.
 
 ## What is SafetyPin Cloud?
 
 SafetyPin Cloud helps you:
-- Create secure SFTP servers with just a few clicks
-- Transfer files safely between computers
-- Keep track of your file transfers
-- Manage your servers and security settings
+- Create ephemeral SFTP connections that route directly to S3 buckets
+- Provide secure file transfer capabilities to clients without AWS knowledge
+- Keep track of all file transfers and access attempts
+- Manage connections with granular security controls and expiration dates
+- Store and organize transferred files in your own S3 buckets
 
 ## Project Structure
 
@@ -105,6 +106,36 @@ Before you start, make sure you have:
 
 4. Open your browser and go to: http://localhost:3000
 
+### Fixing Git Line Ending Issues
+
+If you encounter warnings about line endings (LF vs. CRLF), follow these steps:
+
+1. Ensure you have the correct Git configuration files:
+   ```
+   # Check if the files exist at the root of the repository
+   ls -la .gitattributes .gitignore
+   ```
+
+2. If needed, remove node_modules from Git tracking:
+   ```
+   git rm -r --cached safetypin-frontend/node_modules
+   ```
+
+3. Add and commit the Git configuration files:
+   ```
+   git add .gitattributes .gitignore
+   git commit -m "Add Git configuration files"
+   ```
+
+4. For new projects, consider configuring Git line endings:
+   ```
+   # For Windows:
+   git config --global core.autocrlf true
+   
+   # For Mac/Linux:
+   git config --global core.autocrlf input
+   ```
+
 📺 **Need help with React?** Watch [React JS Crash Course](https://www.youtube.com/watch?v=w7ejDZ8SWv8)
 
 ### Setting Up the Backend
@@ -147,32 +178,34 @@ Before you start, make sure you have:
 
 ## How to Use SafetyPin Cloud
 
-### Creating an SFTP Server
+### Creating an SFTP Connection
 
 1. Log in to the SafetyPin web interface
-2. Click "Create Server" on the dashboard
-3. Enter a name for your server
-4. Choose the server size and region
-5. Click "Create"
+2. Click "New Connection" on the dashboard
+3. Enter a name for your connection
+4. Select or create an S3 bucket destination
+5. Configure security settings and expiration date
+6. Click "Create Connection"
 
-### Connecting to Your SFTP Server
+### Providing Connection Details to Clients
 
-1. Go to the "Servers" page
-2. Select your server
-3. Click "Connection Details"
-4. Use the hostname, username, and your SSH key to connect
+1. Go to the "Connections" page
+2. Select your connection
+3. Copy the hostname, username, and password
+4. Share these credentials securely with your client
 
 You can connect using:
 - FileZilla (Easy for beginners): [FileZilla Tutorial](https://www.youtube.com/watch?v=adxmlHDim6c)
 - WinSCP on Windows: [WinSCP Tutorial](https://www.youtube.com/watch?v=hRoaI0EANKc)
 - Command line SFTP on Mac or Linux: Type `sftp username@hostname`
 
-### Managing Files in the Web Client
+### Monitoring File Transfers
 
-1. Go to the "Servers" page
-2. Select your server
-3. Click "Web Client"
-4. Use the file browser to upload, download, and manage files
+1. Go to the "Connections" page
+2. Select your connection
+3. Navigate to the "Activity Log" tab
+4. View all file transfers, including timestamps, file sizes, and status
+5. Filter activity by date, event type, or status
 
 ## Features
 
@@ -181,20 +214,27 @@ You can connect using:
 - Password reset
 - User profile management
 
-### Server Management
-- Create and delete SFTP servers
-- View server details and status
-- Restart servers
+### Connection Management
+- Create and manage ephemeral SFTP connections
+- View connection details and status
+- Set expiration dates and security parameters
 
-### File Transfer
-- Web-based file browser
-- Upload and download files
-- Manage file permissions
+### S3 Bucket Management
+- Create and configure S3 buckets
+- Browse bucket contents
+- Manage storage and lifecycle policies
+
+### File Transfer Monitoring
+- Track all file transfers
+- View detailed activity logs
+- Monitor transfer status in real-time
 
 ### Security
-- All transfers encrypted
-- SSH key authentication
-- Secure password storage
+- All transfers encrypted in transit
+- Temporary access credentials
+- IP-based restrictions
+- File type filtering
+- Size limits
 
 ### Billing and Usage
 - Pay-as-you-go pricing
@@ -203,21 +243,31 @@ You can connect using:
 
 ## Troubleshooting
 
-### Can't Connect to Your Server?
-- Check if the server is running on the dashboard
-- Verify you're using the correct hostname and username
-- Make sure your SSH key is set up correctly
+### Client Connection Issues
+- Verify the connection hasn't expired
+- Check if IP restrictions are enabled and client's IP is allowed
+- Confirm the client is using the correct hostname, port, username, and password
+- Ensure the client's network allows SFTP traffic
 
-### Deployment Problems?
-- Check your AWS credentials are set up correctly
+### File Transfer Problems
+- Check if files exceed the maximum size limit
+- Verify file types match the allowed extensions
+- Confirm there's sufficient space in the S3 bucket
+- Check S3 bucket permissions and policies
+
+### Deployment Problems
+- Verify your AWS credentials are set up correctly
 - Make sure you have the right permissions in your AWS account
-- Look at the error messages in the console
+- Check the deployment logs for specific error messages
+- Ensure AWS Transfer Family service is available in your region
 
 ## Security Notes
 
-- Always keep your SSH keys secure
-- Don't share your SafetyPin account credentials
-- Regularly review your active servers
+- Never share connection credentials via unsecured channels
+- Use time-limited connections appropriate for the use case
+- Enable IP restrictions whenever possible
+- Regularly review active connections and transfer logs
+- Configure appropriate S3 bucket policies for additional security
 
 ## Getting Help
 
