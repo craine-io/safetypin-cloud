@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 1000" width="500" height="1000">
+  <!-- Logo based on the white-on-black design -->
+  <g fill="white">
+    <!-- Top prongs of pin -->
+    <rect x="180" y="60" width="40" height="200" rx="10" />
+    <rect x="280" y="60" width="40" height="200" rx="10" />
+    
+    <!-- Pin body -->
+    <path d="M 150,260 
+             C 150,260 150,300 170,320 
+             L 170,600 
+             C 120,620 100,680 130,730 
+             L 350,730 
+             C 380,680 360,620 310,600 
+             L 310,320 
+             C 330,300 330,260 330,260 
+             Z" />
+    
+    <!-- Circle in pin body -->
+    <circle cx="250" cy="380" r="60" stroke="black" stroke-width="15" />
+    
+    <!-- Line in pin body -->
+    <rect x="200" y="500" width="100" height="20" rx="10" />
+    
+    <!-- C shape at bottom -->
+    <path d="M 130,730 
+             C 80,780 80,880 130,930 
+             L 240,930 
+             L 240,870 
+             L 170,870 
+             C 140,840 140,820 170,790 
+             L 330,790 
+             C 360,820 360,840 330,870 
+             L 260,870 
+             L 260,930 
+             L 370,930 
+             C 420,880 420,780 370,730 
+             Z" />
+  </g>
+</svg>
