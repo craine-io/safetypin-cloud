@@ -13,6 +13,7 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  Chip,
 } from "@mui/material";
 import { useAuth } from "./AuthContext";
 
@@ -20,6 +21,7 @@ import { useAuth } from "./AuthContext";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LockIcon from "@mui/icons-material/Lock";
+import InfoIcon from "@mui/icons-material/Info";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -37,6 +39,7 @@ const Login: React.FC = () => {
 
     try {
       // In a real app, this would authenticate with AWS Cognito
+      // For our mock implementation, use any email with password "password"
       await signIn(email, password);
       navigate("/");
     } catch (err) {
@@ -94,6 +97,15 @@ const Login: React.FC = () => {
             <Typography color="text.secondary" variant="body2" mt={1}>
               Enter your credentials to access your account
             </Typography>
+            
+            {/* Demo mode indicator */}
+            <Chip 
+              icon={<InfoIcon />} 
+              label="Demo mode: use any email with password 'password'" 
+              color="secondary" 
+              size="small"
+              sx={{ mt: 2 }} 
+            />
           </Box>
 
           <Box component="form" onSubmit={handleLogin} noValidate>

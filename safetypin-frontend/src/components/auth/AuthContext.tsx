@@ -1,7 +1,17 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { Auth } from 'aws-amplify';
-import { CognitoUser } from '@aws-amplify/auth';
+// Import the mock Auth instead of AWS Amplify
+import { Auth } from '../../utils/mock-amplify';
 import { User } from '../../types/auth.types';
+
+// Mock definition for CognitoUser
+interface CognitoUser {
+  attributes: {
+    sub: string;
+    email: string;
+    given_name?: string;
+    family_name?: string;
+  };
+}
 
 interface AuthContextType {
   isAuthenticated: boolean;
