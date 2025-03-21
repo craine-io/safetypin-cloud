@@ -47,9 +47,9 @@ const Logo: React.FC<LogoProps> = ({ size = 32, sx, ...props }) => {
         sx={{
           width: size,
           height: size,
-          color: "#2D1B69",
           ...sx
         }}
+        fontSize="inherit"
         {...props}
       />
     );
