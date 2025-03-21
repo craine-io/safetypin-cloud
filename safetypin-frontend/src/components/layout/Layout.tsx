@@ -71,7 +71,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
     { text: "Servers", icon: <StorageIcon />, path: "/servers" },
     { text: "New Server", icon: <AddCircleIcon />, path: "/servers/new" },
-    { text: "Web Client", icon: <DesktopWindowsIcon />, path: "/web-client" },
+    // Removed Web Client from main nav since it requires an ID parameter
     { text: "Profile", icon: <PersonIcon />, path: "/profile" },
     { text: "Security", icon: <SecurityIcon />, path: "/security" },
     { text: "Billing", icon: <PaymentIcon />, path: "/billing" },

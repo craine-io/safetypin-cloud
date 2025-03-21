@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";
 import PageHeader from "../layout/PageHeader";
+import { useNavigate } from "react-router-dom";
 
 // Icons
 import StorageIcon from "@mui/icons-material/Storage";
@@ -31,6 +32,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Mock data for the dashboard
   const stats = [
@@ -125,7 +127,7 @@ const Dashboard: React.FC = () => {
         action={{
           text: "New Server",
           icon: <AddIcon />,
-          onClick: () => console.log("New server clicked")
+          onClick: () => navigate("/servers/new")
         }}
       />
       
@@ -168,7 +170,7 @@ const Dashboard: React.FC = () => {
                 <Button 
                   size="small" 
                   startIcon={<AddIcon />}
-                  onClick={() => console.log("Add server")}
+                  onClick={() => navigate("/servers/new")}
                 >
                   Add Server
                 </Button>
@@ -234,7 +236,7 @@ const Dashboard: React.FC = () => {
               action={
                 <Button 
                   size="small" 
-                  onClick={() => console.log("View all")}
+                  onClick={() => navigate("/servers")}
                 >
                   View All
                 </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useImperativeHandle, forwardRef, useRef } from "react";
 import {
   Container,
   Grid,
@@ -26,6 +26,8 @@ import {
   DialogContentText,
   DialogActions,
   LinearProgress,
+  Tooltip,
+  Link,
 } from "@mui/material";
 import PageHeader from "../layout/PageHeader";
 
@@ -40,11 +42,20 @@ import TimerIcon from "@mui/icons-material/Timer";
 import NetworkCheckIcon from "@mui/icons-material/NetworkCheck";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import LockIcon from "@mui/icons-material/Lock";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import InfoIcon from "@mui/icons-material/Info";
 
 // Step components
-const SecuritySettings = () => {
-  const [ips, setIps] = useState<string[]>([""]);
+interface SecuritySettingsRef {
+  validateAllIPs: () => boolean;
+}
+
+const SecuritySettings = forwardRef((props: any, ref: React.Ref<SecuritySettingsRef>) => {
+  const [ips, setIps] = useState<string[]>([""]);  
   const [sshKeyOption, setSshKeyOption] = useState<string>("generate");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [ipErrors, setIpErrors] = useState<{[key: number]: string}>({});
 
   const addIpField = () => {
     setIps([...ips, ""]);
@@ -60,7 +71,120 @@ const SecuritySettings = () => {
     const newIps = [...ips];
     newIps[index] = value;
     setIps(newIps);
+    validateIP(value, index);
   };
+
+  // Basic IPv4 validation
+  const validateIPFormat = (ip: string): boolean => {
+    const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    return ipv4Regex.test(ip);
+  };
+  
+  // Validate IP or CIDR format
+  const validateIP = (ip: string, index: number): boolean => {
+    // Clear previous error for this index
+    const newErrors = { ...ipErrors };
+    delete newErrors[index];
+    
+    // Empty field is considered valid during input
+    if (!ip.trim()) {
+      setIpErrors(newErrors);
+      return true;
+    }
+    
+    // Check if it's a CIDR notation (IP/prefix)
+    if (ip.includes('/')) {
+      const parts = ip.split('/');
+      if (parts.length !== 2) {
+        newErrors[index] = 'Invalid CIDR format';
+        setIpErrors(newErrors);
+        return false;
+      }
+      
+      const [ipPart, prefixPart] = parts;
+      
+      // Validate prefix (0-32)
+      const prefix = parseInt(prefixPart, 10);
+      if (isNaN(prefix) || prefix < 0 || prefix > 32) {
+        newErrors[index] = 'CIDR prefix must be between 0 and 32';
+        setIpErrors(newErrors);
+        return false;
+      }
+      
+      // Validate IP part
+      if (!validateIPFormat(ipPart)) {
+        newErrors[index] = 'Invalid IP address format';
+        setIpErrors(newErrors);
+        return false;
+      }
+      
+      setIpErrors(newErrors);
+      return true;
+    }
+    
+    // Validate single IP address
+    if (!validateIPFormat(ip)) {
+      newErrors[index] = 'Invalid IP address format';
+      setIpErrors(newErrors);
+      return false;
+    }
+    
+    setIpErrors(newErrors);
+    return true;
+  };
+
+  const detectMyIP = async (index: number) => {
+    setIsLoading(true);
+    setError("");
+    try {
+      // Using a public IP detection service
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      if (data.ip) {
+        handleIpChange(index, data.ip);
+      } else {
+        setError("Unable to detect your IP address automatically.");
+      }
+    } catch (err) {
+      setError("Error detecting IP address. Please enter it manually.");
+      console.error("IP detection error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Validate all IPs before moving to next step
+  const validateAllIPs = () => {
+    let allValid = true;
+    
+    // If there are no IPs, default to valid
+    if (ips.length === 0) {
+      return true;
+    }
+    
+    // Check each IP
+    for (let i = 0; i < ips.length; i++) {
+      const isValid = validateIP(ips[i], i);
+      if (!isValid) {
+        allValid = false;
+      }
+      
+      // Also check for empty fields (must have at least one valid IP)
+      if (i === 0 && !ips[i].trim()) {
+        const newErrors = { ...ipErrors };
+        newErrors[i] = 'At least one IP address is required';
+        setIpErrors(newErrors);
+        allValid = false;
+      }
+    }
+    
+    return allValid;
+  };
+  
+  // Expose the validation method via ref
+  useImperativeHandle(ref, () => ({
+    validateAllIPs
+  }));
 
   return (
     <>
@@ -115,12 +239,45 @@ const SecuritySettings = () => {
         </Grid>
         
         <Grid item xs={12}>
-          <Typography variant="subtitle1" fontWeight="medium" mb={1}>
-            IP Whitelist
-          </Typography>
+          <Box display="flex" alignItems="center" mb={1}>
+            <Typography variant="subtitle1" fontWeight="medium">
+              IP Whitelist
+            </Typography>
+            <Tooltip 
+              title={
+                <>
+                  <Typography variant="subtitle2" gutterBottom>How to find your IP address:</Typography>
+                  <Typography variant="body2">1. Visit a service like <Link href="https://whatismyip.com" target="_blank" rel="noopener noreferrer" sx={{ color: 'white' }}>whatismyip.com</Link> or <Link href="https://whatismyipaddress.com" target="_blank" rel="noopener noreferrer" sx={{ color: 'white' }}>whatismyipaddress.com</Link></Typography>
+                  <Typography variant="body2">2. Your public IP will be displayed on the page</Typography>
+                  <Typography variant="body2">3. For corporate networks, contact your IT department</Typography>
+                  
+                  <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>Using CIDR Notation:</Typography>
+                  <Typography variant="body2">CIDR (Classless Inter-Domain Routing) lets you specify IP ranges:</Typography>
+                  <Typography variant="body2" sx={{ mt: 0.5 }}>• 192.168.1.0/24: Allows all IPs from 192.168.1.0 to 192.168.1.255</Typography>
+                  <Typography variant="body2">• 10.0.0.0/16: Allows all IPs from 10.0.0.0 to 10.0.255.255</Typography>
+                  <Typography variant="body2">• 0.0.0.0/0: Allows all IP addresses (not recommended)</Typography>
+                </>
+              }
+              arrow
+              placement="right"
+            >
+              <IconButton size="small" sx={{ ml: 1 }}>
+                <HelpOutlineIcon fontSize="small" color="primary" />
+              </IconButton>
+            </Tooltip>
+          </Box>
           <Typography variant="body2" color="text.secondary" mb={2}>
             Only connections from these IP addresses will be allowed
           </Typography>
+          
+          <Alert severity="info" sx={{ mb: 2 }} icon={<InfoIcon />}>
+            <Typography variant="body2" gutterBottom>
+              Restricting access by IP address significantly improves security. Enter your current IP address to allow connections from your location.
+            </Typography>
+            <Typography variant="body2">
+              For multiple locations or networks, you can add each IP separately or use CIDR notation (e.g., 192.168.1.0/24). See the help icon for details.
+            </Typography>
+          </Alert>
           
           {ips.map((ip, index) => (
             <Box key={index} display="flex" alignItems="center" mb={2}>
@@ -131,6 +288,22 @@ const SecuritySettings = () => {
                 value={ip}
                 onChange={(e) => handleIpChange(index, e.target.value)}
                 size="small"
+                error={Boolean(ipErrors[index])}
+                helperText={ipErrors[index]}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button 
+                        size="small" 
+                        onClick={() => detectMyIP(index)}
+                        disabled={isLoading}
+                        sx={{ whiteSpace: 'nowrap' }}
+                      >
+                        {isLoading ? 'Detecting...' : 'Detect My IP'}
+                      </Button>
+                    </InputAdornment>
+                  ),
+                }}
               />
               <IconButton
                 color="error"
@@ -142,6 +315,12 @@ const SecuritySettings = () => {
               </IconButton>
             </Box>
           ))}
+          
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
           
           <Button
             startIcon={<AddIcon />}
@@ -162,7 +341,7 @@ const SecuritySettings = () => {
       </Grid>
     </>
   );
-};
+});
 
 const ServerConfig = () => {
   return (
@@ -500,15 +679,34 @@ const ServerProvision: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [creatingServer, setCreatingServer] = useState(false);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: boolean}>({});
   
   const steps = [
     { label: "Server Configuration", component: <ServerConfig /> },
-    { label: "Security Settings", component: <SecuritySettings /> },
+    { label: "Security Settings", component: <SecuritySettings ref={useRef<any>(null)} /> },
     { label: "Lifecycle Settings", component: <LifecycleSettings /> },
     { label: "Review", component: <Review /> },
   ];
 
+  // Reference to the SecuritySettings component for validation
+  const securitySettingsRef = useRef<{ validateAllIPs: () => boolean }>(null);
+
   const handleNext = () => {
+    // If we're on the Security Settings step, validate IPs before proceeding
+    if (activeStep === 1 && securitySettingsRef.current) {
+      const isValid = securitySettingsRef.current.validateAllIPs();
+      if (!isValid) {
+        // Set validation error to prevent proceeding
+        setValidationErrors({ ...validationErrors, ips: true });
+        return;
+      }
+    }
+
+    // Clear validation errors for the current step
+    const newValidationErrors = { ...validationErrors };
+    delete newValidationErrors[`step-${activeStep}`];
+    setValidationErrors(newValidationErrors);
+
     if (activeStep === steps.length - 1) {
       // Final step - create server
       setCreatingServer(true);
