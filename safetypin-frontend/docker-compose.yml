@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    container_name: safetypin-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    # For local development, uncomment these lines to use volumes
+    # volumes:
+    #  - ./build:/usr/share/nginx/html

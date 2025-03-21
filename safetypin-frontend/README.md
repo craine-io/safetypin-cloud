@@ -28,6 +28,8 @@ This branch contains a modern UI implementation for the SafetyPin Cloud frontend
 
 ## Getting Started
 
+### Standard Setup
+
 1. Install dependencies:
    ```
    npm install
@@ -37,6 +39,49 @@ This branch contains a modern UI implementation for the SafetyPin Cloud frontend
    ```
    npm start
    ```
+
+### Docker Setup
+
+1. Build and run the Docker container:
+   ```bash
+   # Using Docker Compose
+   docker-compose up -d
+
+   # OR using the provided scripts
+   # On Linux/macOS:
+   ./docker-build.sh
+
+   # On Windows:
+   docker-build.bat
+   ```
+
+2. Access the application at http://localhost:3000
+
+3. To stop the container:
+   ```bash
+   # Using Docker Compose
+   docker-compose down
+
+   # OR using Docker directly
+   docker stop safetypin-frontend
+   docker rm safetypin-frontend
+   ```
+
+## Docker Deployment
+
+The application is containerized for easy deployment to various environments:
+
+- **Local Development**: Uses Docker Compose for a simple local setup
+- **AWS ECS Deployment**: Ready for deployment to AWS Elastic Container Service
+- **Container Registry**: Can be pushed to ECR, Docker Hub, or other container registries
+
+### Container Features
+
+- Multi-stage build for smaller image size
+- Nginx for efficient static file serving
+- Proper cache headers for static assets
+- Configured for SPAs with proper routing support
+- Environment variable support
 
 ## Implementation Notes
 
