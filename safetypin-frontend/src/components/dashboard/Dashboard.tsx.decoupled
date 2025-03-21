@@ -1,0 +1,298 @@
+import React from "react";
+import {
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Chip,
+  LinearProgress,
+  IconButton,
+  Button,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import PageHeader from "../layout/PageHeader";
+
+// Import our custom hooks instead of direct backend calls
+import { useServers } from "../../hooks/useServers";
+import { useTransfers } from "../../hooks/useTransfers";
+
+// Icons
+import StorageIcon from "@mui/icons-material/Storage";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import CloudSyncIcon from "@mui/icons-material/CloudSync";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import AddIcon from "@mui/icons-material/Add";
+
+const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  
+  // Use our hooks to fetch data instead of mock data in the component
+  const { servers, loading: serversLoading, error: serversError } = useServers();
+  const { transfers, stats, loading: transfersLoading, error: transfersError } = useTransfers();
+
+  // Stats to show in the dashboard (calculated from real data)
+  const dashboardStats = [
+    {
+      title: "Total Servers",
+      value: String(servers.length),
+      icon: <StorageIcon fontSize="large" sx={{ color: "primary.main" }} />,
+    },
+    {
+      title: "Files Uploaded",
+      value: String(stats.uploadCount),
+      icon: <CloudUploadIcon fontSize="large" sx={{ color: "info.main" }} />,
+    },
+    {
+      title: "Files Downloaded",
+      value: String(stats.downloadCount),
+      icon: <CloudDownloadIcon fontSize="large" sx={{ color: "success.main" }} />,
+    },
+    {
+      title: "Active Transfers",
+      value: String(transfers.filter(t => t.status === 'in-progress').length),
+      icon: <CloudSyncIcon fontSize="large" sx={{ color: "warning.main" }} />,
+    },
+  ];
+
+  // Show a limited number of recent transfers
+  const recentTransfers = transfers.slice(0, 4);
+  
+  // Show a limited number of servers
+  const displayServers = servers.slice(0, 4);
+
+  return (
+    <Container maxWidth="lg">
+      <PageHeader 
+        title="Dashboard" 
+        action={{
+          text: "New Server",
+          icon: <AddIcon />,
+          onClick: () => navigate("/servers/new")
+        }}
+      />
+      
+      {/* Handle loading and error states */}
+      {(serversError || transfersError) && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {serversError || transfersError}
+        </Alert>
+      )}
+      
+      {/* Stats Cards */}
+      <Grid container spacing={3}>
+        {dashboardStats.map((stat) => (
+          <Grid item xs={12} sm={6} md={3} key={stat.title}>
+            <Card>
+              <CardContent>
+                {serversLoading || transfersLoading ? (
+                  <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+                    <CircularProgress size={24} />
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" color="text.secondary">
+                        {stat.title}
+                      </Typography>
+                      <Typography variant="h4" fontWeight="bold" mt={1}>
+                        {stat.value}
+                      </Typography>
+                    </Box>
+                    <Box>{stat.icon}</Box>
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Grid container spacing={3} sx={{ mt: 1 }}>
+        {/* Servers Status */}
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title="Server Status"
+              action={
+                <Button 
+                  size="small" 
+                  startIcon={<AddIcon />}
+                  onClick={() => navigate("/servers/new")}
+                >
+                  Add Server
+                </Button>
+              }
+            />
+            <Divider />
+            <CardContent>
+              {serversLoading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : servers.length === 0 ? (
+                <Typography textAlign="center" py={4} color="text.secondary">
+                  No servers found. Create your first server to get started.
+                </Typography>
+              ) : (
+                <List>
+                  {displayServers.map((server) => (
+                    <React.Fragment key={server.id}>
+                      <ListItem>
+                        <ListItemText
+                          primary={server.name}
+                          secondary={
+                            <>
+                              <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+                                <Box sx={{ flexGrow: 1, mr: 1 }}>
+                                  <LinearProgress
+                                    variant="determinate"
+                                    value={server.storageUsed}
+                                    sx={{
+                                      height: 8,
+                                      borderRadius: 4,
+                                      bgcolor: "grey.100",
+                                      "& .MuiLinearProgress-bar": {
+                                        borderRadius: 4,
+                                      },
+                                    }}
+                                  />
+                                </Box>
+                                <Typography variant="caption" color="text.secondary">
+                                  {server.storageUsed}% used
+                                </Typography>
+                              </Box>
+                            </>
+                          }
+                        />
+                        <ListItemSecondaryAction>
+                          <Chip
+                            label={server.status}
+                            size="small"
+                            color={
+                              server.status === "Online"
+                                ? "success"
+                                : server.status === "Offline"
+                                ? "error"
+                                : "warning"
+                            }
+                            sx={{ mr: 1 }}
+                          />
+                          <IconButton 
+                            edge="end" 
+                            size="small"
+                            onClick={() => navigate(`/servers/${server.id}`)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      <Divider component="li" />
+                    </React.Fragment>
+                  ))}
+                </List>
+              )}
+              {servers.length > 4 && (
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                  <Button 
+                    variant="outlined" 
+                    size="small"
+                    onClick={() => navigate('/servers')}
+                  >
+                    View All Servers
+                  </Button>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Recent Transfers */}
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardHeader
+              title="Recent Transfers"
+              action={
+                <Button 
+                  size="small" 
+                  onClick={() => navigate("/transfers")}
+                >
+                  View All
+                </Button>
+              }
+            />
+            <Divider />
+            <CardContent>
+              {transfersLoading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : transfers.length === 0 ? (
+                <Typography textAlign="center" py={4} color="text.secondary">
+                  No transfers yet. Files transferred to your servers will appear here.
+                </Typography>
+              ) : (
+                <List>
+                  {recentTransfers.map((transfer) => (
+                    <React.Fragment key={transfer.id}>
+                      <ListItem>
+                        <ListItemText
+                          primary={transfer.filename}
+                          secondary={
+                            <>
+                              <Typography variant="caption" component="span">
+                                {transfer.serverName} • {transfer.timestamp} • {transfer.size}
+                              </Typography>
+                            </>
+                          }
+                        />
+                        <ListItemSecondaryAction>
+                          <Chip
+                            label={
+                              transfer.direction === "upload" ? "Upload" : "Download"
+                            }
+                            size="small"
+                            color={
+                              transfer.direction === "upload" ? "primary" : "info"
+                            }
+                            icon={
+                              transfer.direction === "upload" ? (
+                                <CloudUploadIcon fontSize="small" />
+                              ) : (
+                                <CloudDownloadIcon fontSize="small" />
+                              )
+                            }
+                          />
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      <Divider component="li" />
+                    </React.Fragment>
+                  ))}
+                </List>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
+
+export default Dashboard;

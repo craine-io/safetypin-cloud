@@ -6,11 +6,11 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
 import CssBaseline from '@mui/material/CssBaseline';
 
-// Import our mock Amplify
-import { Amplify } from './utils/mock-amplify';
+// Import our auth service configuration
+import { configureAuth } from './utils/auth-service';
 
-// Configure mock Amplify
-Amplify.configure({});
+// Configure auth service
+configureAuth({});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

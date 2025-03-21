@@ -1,23 +1,13 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-// Import the mock Auth instead of AWS Amplify
-import { Auth } from '../../utils/mock-amplify';
+// Import the auth service instead of AWS/mock-amplify
+import { AuthService, AuthUser } from '../../utils/auth-service';
 import { User } from '../../types/auth.types';
-
-// Mock definition for CognitoUser
-interface CognitoUser {
-  attributes: {
-    sub: string;
-    email: string;
-    given_name?: string;
-    family_name?: string;
-  };
-}
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
-  signIn: (email: string, password: string) => Promise<CognitoUser>;
+  signIn: (email: string, password: string) => Promise<AuthUser>;
   signUp: (email: string, password: string, attributes: any) => Promise<any>;
   confirmSignUp: (email: string, code: string) => Promise<any>;
   signOut: () => Promise<void>;
@@ -29,7 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   isLoading: true,
   user: null,
-  signIn: () => Promise.resolve({} as CognitoUser),
+  signIn: () => Promise.resolve({} as AuthUser),
   signUp: () => Promise.resolve({}),
   confirmSignUp: () => Promise.resolve({}),
   signOut: () => Promise.resolve(),
@@ -48,13 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function checkAuthState() {
     try {
-      const currentUser = await Auth.currentAuthenticatedUser();
+      const currentUser = await AuthService.getCurrentUser();
       setIsAuthenticated(true);
       setUser({
-        id: currentUser.attributes.sub,
+        id: currentUser.attributes.id,
         email: currentUser.attributes.email,
-        firstName: currentUser.attributes.given_name || '',
-        lastName: currentUser.attributes.family_name || '',
+        firstName: currentUser.attributes.firstName || '',
+        lastName: currentUser.attributes.lastName || '',
       });
     } catch (error) {
       setIsAuthenticated(false);
@@ -66,13 +56,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function signIn(email: string, password: string) {
     try {
-      const user = await Auth.signIn(email, password);
+      const user = await AuthService.signIn(email, password);
       setIsAuthenticated(true);
       setUser({
-        id: user.attributes.sub,
+        id: user.attributes.id,
         email: user.attributes.email,
-        firstName: user.attributes.given_name || '',
-        lastName: user.attributes.family_name || '',
+        firstName: user.attributes.firstName || '',
+        lastName: user.attributes.lastName || '',
       });
       return user;
     } catch (error) {
@@ -82,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function signUp(email: string, password: string, attributes: any) {
     try {
-      return await Auth.signUp({
+      return await AuthService.signUp({
         username: email,
         password,
         attributes: {
@@ -97,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function confirmSignUp(email: string, code: string) {
     try {
-      return await Auth.confirmSignUp(email, code);
+      return await AuthService.confirmSignUp(email, code);
     } catch (error) {
       throw error;
     }
@@ -105,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function signOut() {
     try {
-      await Auth.signOut();
+      await AuthService.signOut();
       setIsAuthenticated(false);
       setUser(null);
     } catch (error) {
@@ -115,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function forgotPassword(email: string) {
     try {
-      return await Auth.forgotPassword(email);
+      return await AuthService.forgotPassword(email);
     } catch (error) {
       throw error;
     }
@@ -123,7 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function forgotPasswordSubmit(email: string, code: string, newPassword: string) {
     try {
-      return await Auth.forgotPasswordSubmit(email, code, newPassword);
+      return await AuthService.forgotPasswordSubmit(email, code, newPassword);
     } catch (error) {
       throw error;
     }
