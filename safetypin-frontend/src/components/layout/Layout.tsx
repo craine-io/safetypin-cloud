@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import Logo from "../common/Logo";
 
 // MUI Icons
 import MenuIcon from "@mui/icons-material/Menu";
@@ -79,9 +80,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const drawer = (
     <div>
       <Toolbar sx={{ px: 2 }}>
-        <Typography variant="h6" fontWeight="bold" color="primary">
-          SafetyPin Cloud
-        </Typography>
+        <Box display="flex" alignItems="center">
+          <svg 
+            width="32" 
+            height="32" 
+            viewBox="0 0 400 600" 
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ marginRight: '8px' }}
+          >
+            <path
+              d="M240 80L240 250 L330 250 C360 320 330 400 240 450 L200 550 L160 450 C70 400 40 320 70 250 L160 250 L160 80 Z"
+              fill="#2D1B69"
+            />
+            <circle cx="200" cy="320" r="45" stroke="white" strokeWidth="12" fill="#2D1B69" />
+            <rect x="150" y="420" width="100" height="12" rx="6" fill="white" />
+          </svg>
+          <Typography variant="h6" fontWeight="bold" color="primary">
+            SafetyPin OSS
+          </Typography>
+        </Box>
       </Toolbar>
       <Divider />
       <Box sx={{ p: 2 }}>
