@@ -528,7 +528,7 @@ const ServerProvision: React.FC = () => {
   };
 
   const mockServerDetails = {
-    host: "sftp-abc123.safetypin.cloud",
+    host: "sftp-abc123.safetypin-oss.example.com",
     port: 2222,
     username: "sftp-user",
   };

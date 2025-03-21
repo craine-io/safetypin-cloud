@@ -1,5 +1,6 @@
 {
     "name": "safetypin-frontend",
+    "author": "Craine Technology Labs",
     "version": "0.1.0",
     "private": true,
     "dependencies": {

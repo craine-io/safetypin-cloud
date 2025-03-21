@@ -1,6 +1,7 @@
 {
     "name": "safetypin-infrastructure",
     "version": "0.1.0",
+    "author": "Craine Technology Labs",
     "bin": {
       "safetypin-infrastructure": "bin/safetypin-infrastructure.js"
     },

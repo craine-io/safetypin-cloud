@@ -1,10 +1,10 @@
-# SafetyPin Cloud
+# SafetyPin OSS
 
-SafetyPin Cloud is a secure file transfer solution that enables clients to transfer files to Amazon S3 buckets through ephemeral SFTP connections without requiring them to maintain their own servers.
+SafetyPin OSS is a secure file transfer solution that enables clients to transfer files to Amazon S3 buckets through ephemeral SFTP connections without requiring them to maintain their own servers. This is the open-source version of the SafetyPin project created by Craine Technology Labs.
 
-## What is SafetyPin Cloud?
+## What is SafetyPin OSS?
 
-SafetyPin Cloud helps you:
+SafetyPin OSS helps you:
 - Create ephemeral SFTP connections that route directly to S3 buckets
 - Provide secure file transfer capabilities to clients without AWS knowledge
 - Keep track of all file transfers and access attempts
@@ -16,7 +16,7 @@ SafetyPin Cloud helps you:
 The project has three main parts:
 
 ```
-safetypin-cloud/
+safetypin-oss/
 ├── safetypin-frontend/     # The web interface
 ├── safetypin-backend/      # The server code that runs in AWS
 └── safetypin-infrastructure/ # The code that sets up AWS resources
@@ -55,8 +55,8 @@ Before you start, make sure you have:
 4. **Clone the Repository**:
    - Open Command Prompt
    - Navigate to where you want to store the project: `cd C:\Projects` (or your preferred location)
-   - Clone the repo: `git clone https://github.com/your-username/safetypin-cloud.git`
-   - Go to project folder: `cd safetypin-cloud`
+   - Clone the repo: `git clone https://github.com/your-username/safetypin-oss.git`
+   - Go to project folder: `cd safetypin-oss`
 
 📺 **Need help setting up Windows?** Watch [Node.js and NPM on Windows](https://www.youtube.com/watch?v=X-FPCwZFU_8)
 
@@ -82,8 +82,8 @@ Before you start, make sure you have:
 5. **Clone the Repository**:
    - Open Terminal
    - Navigate to where you want to store the project: `cd ~/Projects` (or your preferred location)
-   - Clone the repo: `git clone https://github.com/your-username/safetypin-cloud.git`
-   - Go to project folder: `cd safetypin-cloud`
+   - Clone the repo: `git clone https://github.com/your-username/safetypin-oss.git`
+   - Go to project folder: `cd safetypin-oss`
 
 📺 **Need help setting up Mac?** Watch [Node.js Setup on Mac](https://www.youtube.com/watch?v=0hh-vdlU4Xw)
 
@@ -176,11 +176,11 @@ If you encounter warnings about line endings (LF vs. CRLF), follow these steps:
 
 📺 **Need help with AWS CDK?** Watch [AWS CDK Tutorial](https://www.youtube.com/watch?v=Cf2fuE1QH7c)
 
-## How to Use SafetyPin Cloud
+## How to Use SafetyPin OSS
 
 ### Creating an SFTP Connection
 
-1. Log in to the SafetyPin web interface
+1. Log in to the SafetyPin OSS web interface
 2. Click "New Connection" on the dashboard
 3. Enter a name for your connection
 4. Select or create an S3 bucket destination
@@ -274,4 +274,5 @@ You can connect using:
 If you need more help:
 - Check the troubleshooting section above
 - Watch the suggested YouTube tutorials
-- Contact support at support@safetypin.cloud (example email)
+- Open an issue on GitHub
+- Contact Craine Technology Labs for professional support options

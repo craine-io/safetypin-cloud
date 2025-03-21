@@ -1,7 +1,7 @@
-SafetyPin Cloud - Dual License
+SafetyPin OSS - Dual License
 
 COPYRIGHT NOTICE
-Copyright (c) 2025 SafetyPin Cloud
+Copyright (c) 2025 Craine Technology Labs
 
 This software is provided under a dual license model:
 
@@ -27,8 +27,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ADDITIONAL TERMS per GNU AGPL version 3 section 7:
 - If you modify this Program, you must include a visible notice to users
-  that the origin of the software is SafetyPin Cloud, including a link to
-  https://github.com/[your-github-username]/safetypin-cloud
+  that the origin of the software is SafetyPin OSS by Craine Technology Labs, including a link to
+  https://github.com/[your-github-username]/safetypin-oss
 - You must retain any attribution notices and links to the original source
   present in the software
 
@@ -45,7 +45,7 @@ The commercial license allows you to:
 - Not be bound by the terms of the AGPL-3.0 license
 
 To obtain a commercial license, please contact:
-[Your Contact Information]
+Craine Technology Labs at [contact information]
 
 ====================================================================================
 DEFINITION OF COMMERCIAL USE
@@ -62,12 +62,12 @@ For the purposes of this license, "commercial use" is defined as:
 GENERAL LICENSE TERMS
 ====================================================================================
 
-SafetyPin Cloud is a secure SFTP server management solution that provides
+SafetyPin OSS is a secure SFTP server management solution that provides
 automated deployment, management, and monitoring of SFTP servers.
 
-Any use of the SafetyPin Cloud name, logos, or trademarks must comply with the
+Any use of the SafetyPin OSS name, Craine Technology Labs name, logos, or trademarks must comply with the
 trademark policies of the copyright holder.
 
-This license does not grant you any rights to use the SafetyPin Cloud name, logos,
+This license does not grant you any rights to use the SafetyPin OSS name, Craine Technology Labs name, logos,
 or trademarks for any purpose except as required for reasonable and customary
 attribution as specified by the AGPL-3.0 license.

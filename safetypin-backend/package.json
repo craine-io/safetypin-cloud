@@ -1,7 +1,8 @@
 {
     "name": "safetypin-backend",
     "version": "0.1.0",
-    "description": "Backend services for SafetyPin.cloud",
+    "author": "Craine Technology Labs",
+    "description": "Backend services for SafetyPin OSS",
     "main": "index.js",
     "scripts": {
       "test": "jest"
