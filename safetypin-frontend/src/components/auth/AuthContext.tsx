@@ -45,6 +45,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: currentUser.attributes.email,
         firstName: currentUser.attributes.firstName || '',
         lastName: currentUser.attributes.lastName || '',
+        company: currentUser.attributes.company || '',
+        phoneNumber: currentUser.attributes.phone_number || '',
       });
     } catch (error) {
       setIsAuthenticated(false);
@@ -63,6 +65,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: user.attributes.email,
         firstName: user.attributes.firstName || '',
         lastName: user.attributes.lastName || '',
+        company: user.attributes.company || '',
+        phoneNumber: user.attributes.phone_number || '',
       });
       return user;
     } catch (error) {

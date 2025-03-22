@@ -45,6 +45,14 @@ class ApiService {
   }
   
   /**
+   * Check if we should use mock data
+   */
+  shouldUseMockData(): boolean {
+    // For demo purposes, always use mock data
+    return true;
+  }
+  
+  /**
    * Make a GET request
    */
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {

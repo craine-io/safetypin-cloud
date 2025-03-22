@@ -1,5 +1,5 @@
 // Transfer service implementation
-import { api } from './api';
+import api from './api';
 
 // Types
 export interface Transfer {

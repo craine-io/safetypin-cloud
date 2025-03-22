@@ -31,6 +31,8 @@ export const signIn = async (email: string, password: string): Promise<SignInRes
       email: response.attributes.email,
       firstName: response.attributes.given_name || '',
       lastName: response.attributes.family_name || '',
+      company: response.attributes.company || '',
+      phoneNumber: response.attributes.phone_number || '',
     };
     
     return { user, token };

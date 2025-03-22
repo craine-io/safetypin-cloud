@@ -5,6 +5,8 @@ export interface CognitoUser {
     email: string;
     given_name?: string;
     family_name?: string;
+    company?: string;
+    phone_number?: string;
   };
 }
 

@@ -7,6 +7,8 @@ export interface AuthUser {
     email: string;
     firstName?: string;
     lastName?: string;
+    company?: string;
+    phone_number?: string;
   };
 }
 
@@ -48,6 +50,8 @@ export class AuthService {
           email: user.attributes.email,
           firstName: user.attributes.given_name,
           lastName: user.attributes.family_name,
+          company: user.attributes.company,
+          phone_number: user.attributes.phone_number,
         }
       };
     } catch (error) {
@@ -65,6 +69,8 @@ export class AuthService {
           email: user.attributes.email,
           firstName: user.attributes.given_name,
           lastName: user.attributes.family_name,
+          company: user.attributes.company,
+          phone_number: user.attributes.phone_number,
         }
       };
     } catch (error) {
