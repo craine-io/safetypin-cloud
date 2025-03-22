@@ -30,15 +30,15 @@ export const Auth = {
     });
   },
   
-  signUp: () => Promise.resolve({}),
-  confirmSignUp: () => Promise.resolve('SUCCESS'),
+  signUp: (params) => Promise.resolve({}),
+  confirmSignUp: (email, code) => Promise.resolve('SUCCESS'),
   signOut: () => {
     localStorage.removeItem('mockIsAuthenticated');
     localStorage.removeItem('mockEmail');
     return Promise.resolve();
   },
-  forgotPassword: () => Promise.resolve({}),
-  forgotPasswordSubmit: () => Promise.resolve({})
+  forgotPassword: (email) => Promise.resolve({}),
+  forgotPasswordSubmit: (email, code, newPassword) => Promise.resolve({})
 };
 
 // Mock configure function

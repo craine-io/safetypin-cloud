@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 import LogoSvg from './LogoSvg';
 import EmbeddedLogo from './EmbeddedLogo';
 
-interface LogoProps extends BoxProps {
+interface LogoProps {
   size?: number;
+  color?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-const Logo: React.FC<LogoProps> = ({ size = 32, sx, ...props }) => {
+const Logo: React.FC<LogoProps> = ({ size = 32, color, className, style }) => {
   const [loadStatus, setLoadStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [tryEmbedded, setTryEmbedded] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>(`${process.env.PUBLIC_URL}/logo.svg?v=${new Date().getTime()}`);
@@ -34,8 +37,8 @@ const Logo: React.FC<LogoProps> = ({ size = 32, sx, ...props }) => {
     return (
       <EmbeddedLogo
         size={size}
-        sx={sx}
-        {...props}
+        style={style}
+        className={className}
       />
     );
   }
@@ -44,13 +47,9 @@ const Logo: React.FC<LogoProps> = ({ size = 32, sx, ...props }) => {
   if (loadStatus === 'error') {
     return (
       <LogoSvg
-        sx={{
-          width: size,
-          height: size,
-          ...sx
-        }}
-        fontSize="inherit"
-        {...props}
+        width={size}
+        height={size}
+        color={color}
       />
     );
   }
@@ -62,10 +61,10 @@ const Logo: React.FC<LogoProps> = ({ size = 32, sx, ...props }) => {
       alt="SafetyPin OSS Logo"
       sx={{
         width: size,
-        height: size,
-        ...sx
+        height: size
       }}
-      {...props}
+      style={style}
+      className={className}
     />
   );
 };

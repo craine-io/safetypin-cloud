@@ -1,21 +1,23 @@
 import React from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 
-interface LogoProps extends BoxProps {
+interface LogoProps {
   size?: number;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
-const EmbeddedLogo: React.FC<LogoProps> = ({ size = 32, sx, ...props }) => {
+const EmbeddedLogo: React.FC<LogoProps> = ({ size = 32, style, className }) => {
   return (
     <Box
       component="svg"
       viewBox="0 0 400 600"
       sx={{
         width: size,
-        height: size,
-        ...sx
+        height: size
       }}
-      {...props}
+      style={style}
+      className={className}
     >
       <use xlinkHref="#safetypin-logo" />
     </Box>

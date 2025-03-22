@@ -40,14 +40,14 @@ export const Auth = {
   },
   
   signUp: (params: { username: string; password: string; attributes: any }) => Promise.resolve({}),
-  confirmSignUp: () => Promise.resolve('SUCCESS'),
+  confirmSignUp: (email: string, code: string) => Promise.resolve('SUCCESS'),
   signOut: () => {
     localStorage.removeItem('mockIsAuthenticated');
     localStorage.removeItem('mockEmail');
     return Promise.resolve();
   },
-  forgotPassword: () => Promise.resolve({}),
-  forgotPasswordSubmit: () => Promise.resolve({})
+  forgotPassword: (email: string) => Promise.resolve({}),
+  forgotPasswordSubmit: (email: string, code: string, newPassword: string) => Promise.resolve({})
 };
 
 // Mock configure function
