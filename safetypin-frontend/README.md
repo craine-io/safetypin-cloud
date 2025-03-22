@@ -10,6 +10,7 @@ This branch contains a modern UI implementation for the SafetyPin Cloud frontend
 - **Server Management UI**: Card-based layout for easy scanning and management
 - **Consistent Page Headers**: With breadcrumbs and actions
 - **Authentication Screens**: Clean, modern login and registration forms
+- **Test-Driven Development**: Comprehensive testing infrastructure for TDD workflow
 
 ## Components
 
@@ -25,6 +26,9 @@ This branch contains a modern UI implementation for the SafetyPin Cloud frontend
 - Material UI 5
 - React Router 6
 - AWS Amplify (Auth)
+- Jest & React Testing Library for unit testing
+- Cypress for end-to-end testing
+- Docker for containerized development and testing
 
 ## Getting Started
 
@@ -83,23 +87,72 @@ The application is containerized for easy deployment to various environments:
 - Configured for SPAs with proper routing support
 - Environment variable support
 
+## Test-Driven Development
+
+The project follows Test-Driven Development practices, with comprehensive testing infrastructure:
+
+### Running Tests
+
+```bash
+# Run unit tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:ci
+
+# Run end-to-end tests
+npm run cypress:run
+
+# Start interactive Cypress test runner
+npm run cypress:open
+```
+
+### Using Docker for Testing
+
+```bash
+# Run tests in Docker
+docker-compose -f docker-compose.test.yml run --rm test
+
+# Run tests in watch mode
+docker-compose -f docker-compose.test.yml run --rm test:watch
+
+# Run E2E tests
+docker-compose -f docker-compose.test.yml up -d app
+docker-compose -f docker-compose.test.yml run --rm cypress
+docker-compose -f docker-compose.test.yml down
+```
+
+For detailed information about TDD workflows, see:
+- [TDD Workflow](./README.tdd.md)
+- [Docker Development and Testing](./README.docker.md)
+
 ## Implementation Notes
 
 - The UI uses a custom theme that can be found in `src/theme/index.ts`
 - All components follow a consistent design language
 - Authentication using AWS Amplify is integrated throughout the UI
 - Responsive design principles are applied to all components
+- Tests are organized to mirror the src directory structure
 
-## Screenshots
+## CI/CD Pipeline
 
-(Add screenshots here when available)
+The project includes GitHub Actions workflows for automated testing:
+
+- Runs linting and unit tests on every push and pull request
+- Executes end-to-end tests for critical user flows
+- Builds Docker container to verify build process
+- Deploys to staging environment on successful tests
+- Generates test coverage reports
 
 ## Next Steps
 
 - Complete remaining pages (ServerDetails, WebClient, etc.)
 - Add data visualization components
 - Implement real data fetching from backend
-- Add unit and integration tests
+- Increase test coverage to >90%
 
 ## Contributors
 

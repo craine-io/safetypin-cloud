@@ -1,16 +1,28 @@
 version: '3.8'
 
 services:
-  frontend:
+  app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
-      - "3000:80"
-    container_name: safetypin-frontend
-    restart: unless-stopped
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
     environment:
-      - NODE_ENV=production
-    # For local development, uncomment these lines to use volumes
-    # volumes:
-    #  - ./build:/usr/share/nginx/html
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    command: npm start
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    command: npm test
