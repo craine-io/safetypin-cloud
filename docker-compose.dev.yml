@@ -42,7 +42,7 @@ services:
       - JWT_SECRET=dev-secret-key
       - DEV_ENCRYPTION_KEY=dev-encryption-key
     ports:
-      - "3000:3000"
+      - "3002:3000"
     volumes:
       - ./safetypin-backend:/app
       - backend-node-modules:/app/node_modules
@@ -64,7 +64,7 @@ services:
       - frontend-node-modules:/app/node_modules
     command: npm start
     environment:
-      - REACT_APP_API_URL=http://localhost:3000
+      - REACT_APP_API_URL=http://localhost:3002
       - WDS_SOCKET_PORT=3001  # For hot reloading to work properly
 
 volumes:
