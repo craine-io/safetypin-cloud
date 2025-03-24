@@ -20,6 +20,8 @@
     },
     "scripts": {
       "start": "react-scripts start",
+      "start:alt": "set PORT=3001 && react-scripts start",
+      "start:port": "node start-with-port.js",
       "build": "react-scripts build",
       "test": "react-scripts test",
       "test:ci": "react-scripts test --watchAll=false --coverage",

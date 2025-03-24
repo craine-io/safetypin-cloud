@@ -57,7 +57,7 @@ export const getDbConfig = async (): Promise<PoolConfig> => {
 };
 
 // Create a pool to manage database connections
-let pool: Pool;
+let pool: Pool | undefined;
 
 export const initializeDbPool = async (): Promise<Pool> => {
   if (!pool) {
@@ -78,7 +78,8 @@ export const getClient = async (): Promise<PoolClient> => {
   if (!pool) {
     await initializeDbPool();
   }
-  return pool.connect();
+  // Non-null assertion since we know pool exists after initializeDbPool
+  return pool!.connect();
 };
 
 // Execute a query and release the client back to the pool
@@ -87,7 +88,8 @@ export const query = async (text: string, params: any[] = []): Promise<any> => {
     await initializeDbPool();
   }
   const start = Date.now();
-  const res = await pool.query(text, params);
+  // Non-null assertion since we know pool exists after initializeDbPool
+  const res = await pool!.query(text, params);
   const duration = Date.now() - start;
   
   // Log queries that take longer than 500ms

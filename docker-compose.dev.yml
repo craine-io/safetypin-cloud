@@ -41,6 +41,7 @@ services:
       - RUN_MIGRATIONS=true
       - JWT_SECRET=dev-secret-key
       - DEV_ENCRYPTION_KEY=dev-encryption-key
+      - REACT_APP_USE_MOCK_DATA=false # Ensure we're not using mock data
     ports:
       - "3000:3000"
     volumes:
@@ -64,8 +65,11 @@ services:
       - frontend-node-modules:/app/node_modules
     command: npm start
     environment:
-      - REACT_APP_API_URL=http://localhost:3000
+      - REACT_APP_API_URL=http://backend:3000 # Docker internal service name
+      - REACT_APP_USE_MOCK_DATA=false # Ensure we're not using mock data
+      - REACT_APP_RUNTIME_ENV=docker # Flag to indicate we're running in Docker
       - WDS_SOCKET_PORT=3001  # For hot reloading to work properly
+      - PORT=3000 # Ensure React app runs on port 3000 inside container
 
 volumes:
   postgres-data-dev:

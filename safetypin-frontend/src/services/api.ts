@@ -1,11 +1,12 @@
 // API service for SafetyPin
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+
 import config from '../config';
 
 // Create the API service
 class ApiService {
   private client: AxiosInstance;
-  
+
   constructor() {
     // Create axios instance with base config
     this.client = axios.create({
@@ -13,12 +14,12 @@ class ApiService {
       timeout: config.api.timeout,
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
     });
-    
+
     // Add authentication interceptor
-    this.client.interceptors.request.use((config) => {
+    this.client.interceptors.request.use(config => {
       const token = localStorage.getItem('authToken');
       if (token) {
         config.headers = config.headers || {};
@@ -26,11 +27,11 @@ class ApiService {
       }
       return config;
     });
-    
+
     // Add response interceptor for error handling
     this.client.interceptors.response.use(
-      (response) => response,
-      async (error) => {
+      response => response,
+      async error => {
         // Handle unauthorized errors (401)
         if (error.response && error.response.status === 401) {
           // In a real app, we might refresh the token or redirect to login
@@ -38,20 +39,27 @@ class ApiService {
           localStorage.removeItem('authToken');
           window.location.href = '/login';
         }
-        
+
         return Promise.reject(error);
       }
     );
   }
-  
+
   /**
    * Check if we should use mock data
    */
   shouldUseMockData(): boolean {
-    // For demo purposes, always use mock data
-    return true;
+    // Only use mock data if explicitly set via environment variable
+    return process.env.REACT_APP_USE_MOCK_DATA === 'true';
   }
-  
+
+  /**
+   * Get the base URL of the API
+   */
+  getBaseUrl(): string {
+    return config.api.baseUrl;
+  }
+
   /**
    * Make a GET request
    */
@@ -64,11 +72,15 @@ class ApiService {
       throw error;
     }
   }
-  
+
   /**
    * Make a POST request
    */
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(
+    url: string,
+    data?: Record<string, unknown>,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     try {
       const response = await this.client.post<T>(url, data, config);
       return response.data;
@@ -77,11 +89,15 @@ class ApiService {
       throw error;
     }
   }
-  
+
   /**
    * Make a PUT request
    */
-  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async put<T>(
+    url: string,
+    data?: Record<string, unknown>,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     try {
       const response = await this.client.put<T>(url, data, config);
       return response.data;
@@ -90,7 +106,7 @@ class ApiService {
       throw error;
     }
   }
-  
+
   /**
    * Make a DELETE request
    */

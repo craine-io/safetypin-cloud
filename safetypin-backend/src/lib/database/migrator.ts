@@ -47,7 +47,7 @@ export async function getAppliedMigrations(): Promise<string[]> {
     }
     
     const result = await query('SELECT name FROM migrations ORDER BY id ASC');
-    return result.rows.map(row => row.name);
+    return result.rows.map((row: { name: string }) => row.name);
   } catch (error) {
     // If the table doesn't exist yet, return empty array
     return [];

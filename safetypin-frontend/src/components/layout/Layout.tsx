@@ -1,54 +1,55 @@
-import React, { useState } from "react";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import LogoutIcon from '@mui/icons-material/Logout';
+// Icons
+import MenuIcon from '@mui/icons-material/Menu';
+import NightlightIcon from '@mui/icons-material/Nightlight';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import PaymentIcon from '@mui/icons-material/Payment';
+// All icons are imported above
+import PersonIcon from '@mui/icons-material/Person';
+import SearchIcon from '@mui/icons-material/Search';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ShieldIcon from '@mui/icons-material/Shield';
+import StorageIcon from '@mui/icons-material/Storage';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import {
+  alpha,
   AppBar,
+  Avatar,
+  Badge,
   Box,
   Button,
+  Chip,
   CssBaseline,
+  Divider,
   Drawer,
   IconButton,
-  Toolbar,
-  Typography,
-  Divider,
+  // ButtonBase is not used
+  InputBase,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Avatar,
   Menu,
   MenuItem,
+  Toolbar,
   Tooltip,
-  Badge,
+  Typography,
   useMediaQuery,
   useTheme,
-  alpha,
-  Chip,
-  ButtonBase,
-  InputBase,
-} from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+} from '@mui/material';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-// Icons
-import MenuIcon from "@mui/icons-material/Menu";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import StorageIcon from "@mui/icons-material/Storage";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
-import PersonIcon from "@mui/icons-material/Person";
-import ShieldIcon from "@mui/icons-material/Shield";
-import PaymentIcon from "@mui/icons-material/Payment";
-import LogoutIcon from "@mui/icons-material/Logout";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import SettingsIcon from "@mui/icons-material/Settings";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import NightlightIcon from "@mui/icons-material/Nightlight";
-import SearchIcon from "@mui/icons-material/Search";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import { useAuth } from '../auth/AuthContext';
 
 const drawerWidth = 280;
 
@@ -61,7 +62,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  // Check for mobile viewport
+  useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [notificationsAnchor, setNotificationsAnchor] = useState<null | HTMLElement>(null);
@@ -98,61 +100,64 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const handleLogout = async () => {
     try {
       await signOut();
-      navigate("/login");
+      navigate('/login');
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error('Logout error:', error);
     }
   };
 
   const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
-    { text: "Servers", icon: <StorageIcon />, path: "/servers" },
-    { text: "New Server", icon: <AddCircleOutlineIcon />, path: "/servers/new" },
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+    { text: 'Servers', icon: <StorageIcon />, path: '/servers' },
+    { text: 'New Server', icon: <AddCircleOutlineIcon />, path: '/servers/new' },
+    { text: 'API Test', icon: <BugReportIcon />, path: '/api-test' },
   ];
 
   const settingsItems = [
-    { text: "Profile", icon: <PersonIcon />, path: "/profile" },
-    { text: "Security", icon: <ShieldIcon />, path: "/security" },
-    { text: "Billing", icon: <PaymentIcon />, path: "/billing" },
+    { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
+    { text: 'Security', icon: <ShieldIcon />, path: '/security' },
+    { text: 'Billing', icon: <PaymentIcon />, path: '/billing' },
   ];
 
   // Mock notification data
   const notifications = [
-    { id: 1, title: "File transfer completed", time: "10 minutes ago", read: false },
-    { id: 2, title: "Server maintenance scheduled", time: "3 hours ago", read: false },
-    { id: 3, title: "Storage quota reaching limit", time: "1 day ago", read: true },
+    { id: 1, title: 'File transfer completed', time: '10 minutes ago', read: false },
+    { id: 2, title: 'Server maintenance scheduled', time: '3 hours ago', read: false },
+    { id: 3, title: 'Storage quota reaching limit', time: '1 day ago', read: true },
   ];
 
   const drawer = (
-    <Box 
+    <Box
       sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
-      <Box sx={{ 
-        py: 3, 
-        px: 2,
-        display: "flex", 
-        alignItems: "center",
-        justifyContent: "center"
-      }}>
-        <Box 
-          sx={{ 
-            display: "flex", 
-            alignItems: "center",
+      <Box
+        sx={{
+          py: 3,
+          px: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
             backgroundColor: alpha(theme.palette.primary.main, 0.1),
             py: 1.5,
             px: 2,
             borderRadius: 2,
-            width: "100%",
+            width: '100%',
           }}
         >
-          <svg 
-            width="32" 
-            height="32" 
-            viewBox="0 0 400 600" 
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 400 600"
             xmlns="http://www.w3.org/2000/svg"
             style={{ marginRight: '12px' }}
           >
@@ -170,10 +175,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Box>
 
       <Box sx={{ px: 2, mb: 2 }}>
-        <Box 
+        <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             backgroundColor: theme.palette.background.paper,
             borderRadius: 2,
             p: 1,
@@ -181,35 +186,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           }}
         >
           <SearchIcon color="action" sx={{ ml: 1, mr: 1 }} />
-          <InputBase 
-            placeholder="Search..."
-            sx={{ ml: 1, flex: 1, fontSize: "0.875rem" }}
-          />
+          <InputBase placeholder="Search..." sx={{ ml: 1, flex: 1, fontSize: '0.875rem' }} />
         </Box>
       </Box>
 
       <Box sx={{ p: 2 }}>
-        <Box 
-          sx={{ 
-            display: "flex", 
-            alignItems: "center", 
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
             p: 2,
             borderRadius: 2,
             backgroundColor: alpha(theme.palette.primary.main, 0.04),
             mb: 2,
           }}
         >
-          <Avatar 
-            sx={{ 
-              width: 42, 
-              height: 42, 
+          <Avatar
+            sx={{
+              width: 42,
+              height: 42,
               mr: 2,
               border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
             }}
           >
-            {user?.firstName?.[0]}{user?.lastName?.[0]}
+            {user?.firstName?.[0]}
+            {user?.lastName?.[0]}
           </Avatar>
-          <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+          <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
             <Typography variant="subtitle1" fontWeight="medium" noWrap>
               {user?.firstName} {user?.lastName}
             </Typography>
@@ -217,14 +220,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {user?.email}
             </Typography>
           </Box>
-          <IconButton 
-            size="small" 
-            sx={{ 
+          <IconButton
+            size="small"
+            sx={{
               ml: 1,
               backgroundColor: alpha(theme.palette.primary.main, 0.1),
               '&:hover': {
                 backgroundColor: alpha(theme.palette.primary.main, 0.2),
-              }
+              },
             }}
             onClick={handleProfileMenuOpen}
           >
@@ -233,28 +236,36 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Box>
       </Box>
 
-      <Typography 
-        variant="subtitle2" 
-        color="text.secondary" 
-        sx={{ px: 3, mb: 1, textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "0.5px" }}
+      <Typography
+        variant="subtitle2"
+        color="text.secondary"
+        sx={{
+          px: 3,
+          mb: 1,
+          textTransform: 'uppercase',
+          fontSize: '0.75rem',
+          letterSpacing: '0.5px',
+        }}
       >
         Main Menu
       </Typography>
 
       <List sx={{ px: 2 }}>
-        {menuItems.map((item) => (
+        {menuItems.map(item => (
           <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
             <ListItemButton
               sx={{
                 borderRadius: 2,
-                backgroundColor: 
-                  location.pathname === item.path ? alpha(theme.palette.primary.main, 0.1) : "transparent",
-                color: 
-                  location.pathname === item.path ? "primary.main" : "inherit",
+                backgroundColor:
+                  location.pathname === item.path
+                    ? alpha(theme.palette.primary.main, 0.1)
+                    : 'transparent',
+                color: location.pathname === item.path ? 'primary.main' : 'inherit',
                 '&:hover': {
-                  backgroundColor: location.pathname === item.path 
-                    ? alpha(theme.palette.primary.main, 0.15)
-                    : alpha(theme.palette.primary.main, 0.05),
+                  backgroundColor:
+                    location.pathname === item.path
+                      ? alpha(theme.palette.primary.main, 0.15)
+                      : alpha(theme.palette.primary.main, 0.05),
                 },
               }}
               onClick={() => {
@@ -262,32 +273,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 setMobileOpen(false);
               }}
             >
-              <ListItemIcon 
-                sx={{ 
-                  color: location.pathname === item.path ? "primary.main" : "inherit",
+              <ListItemIcon
+                sx={{
+                  color: location.pathname === item.path ? 'primary.main' : 'inherit',
                   minWidth: 40,
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={item.text}
                 primaryTypographyProps={{
                   fontWeight: location.pathname === item.path ? 600 : 400,
                 }}
               />
-              {item.path === "/servers" && (
-                <Chip 
-                  label="12" 
-                  size="small" 
-                  color={location.pathname === item.path ? "primary" : "default"}
-                  sx={{ 
-                    height: 20, 
-                    fontSize: "0.75rem",
-                    backgroundColor: location.pathname === item.path 
-                      ? alpha(theme.palette.primary.main, 0.2)
-                      : alpha(theme.palette.action.selected, 0.1),
-                    color: location.pathname === item.path ? "primary.main" : "text.secondary",
+              {item.path === '/servers' && (
+                <Chip
+                  label="12"
+                  size="small"
+                  color={location.pathname === item.path ? 'primary' : 'default'}
+                  sx={{
+                    height: 20,
+                    fontSize: '0.75rem',
+                    backgroundColor:
+                      location.pathname === item.path
+                        ? alpha(theme.palette.primary.main, 0.2)
+                        : alpha(theme.palette.action.selected, 0.1),
+                    color: location.pathname === item.path ? 'primary.main' : 'text.secondary',
                   }}
                 />
               )}
@@ -296,10 +308,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         ))}
       </List>
 
-      <Typography 
-        variant="subtitle2" 
-        color="text.secondary" 
-        sx={{ px: 3, mb: 1, mt: 3, textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "0.5px" }}
+      <Typography
+        variant="subtitle2"
+        color="text.secondary"
+        sx={{
+          px: 3,
+          mb: 1,
+          mt: 3,
+          textTransform: 'uppercase',
+          fontSize: '0.75rem',
+          letterSpacing: '0.5px',
+        }}
       >
         Recent Activity
       </Typography>
@@ -317,15 +336,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <ListItemIcon sx={{ minWidth: 40 }}>
               <CloudUploadIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText 
+            <ListItemText
               primary="Uploaded files"
               secondary="10 minutes ago"
-              primaryTypographyProps={{ fontSize: "0.875rem" }}
-              secondaryTypographyProps={{ fontSize: "0.75rem" }}
+              primaryTypographyProps={{ fontSize: '0.875rem' }}
+              secondaryTypographyProps={{ fontSize: '0.75rem' }}
             />
           </ListItemButton>
         </ListItem>
-        
+
         <ListItem disablePadding sx={{ mb: 0.5 }}>
           <ListItemButton
             sx={{
@@ -338,11 +357,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <ListItemIcon sx={{ minWidth: 40 }}>
               <FolderOpenIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText 
+            <ListItemText
               primary="New server created"
               secondary="3 hours ago"
-              primaryTypographyProps={{ fontSize: "0.875rem" }}
-              secondaryTypographyProps={{ fontSize: "0.75rem" }}
+              primaryTypographyProps={{ fontSize: '0.875rem' }}
+              secondaryTypographyProps={{ fontSize: '0.75rem' }}
             />
           </ListItemButton>
         </ListItem>
@@ -359,11 +378,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <ListItemIcon sx={{ minWidth: 40 }}>
               <CloudDownloadIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText 
+            <ListItemText
               primary="Downloaded reports"
               secondary="1 day ago"
-              primaryTypographyProps={{ fontSize: "0.875rem" }}
-              secondaryTypographyProps={{ fontSize: "0.75rem" }}
+              primaryTypographyProps={{ fontSize: '0.875rem' }}
+              secondaryTypographyProps={{ fontSize: '0.75rem' }}
             />
           </ListItemButton>
         </ListItem>
@@ -374,19 +393,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Divider sx={{ my: 2 }} />
 
       <List sx={{ px: 2 }}>
-        {settingsItems.map((item) => (
+        {settingsItems.map(item => (
           <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
             <ListItemButton
               sx={{
                 borderRadius: 2,
-                backgroundColor: 
-                  location.pathname === item.path ? alpha(theme.palette.primary.main, 0.1) : "transparent",
-                color: 
-                  location.pathname === item.path ? "primary.main" : "inherit",
+                backgroundColor:
+                  location.pathname === item.path
+                    ? alpha(theme.palette.primary.main, 0.1)
+                    : 'transparent',
+                color: location.pathname === item.path ? 'primary.main' : 'inherit',
                 '&:hover': {
-                  backgroundColor: location.pathname === item.path 
-                    ? alpha(theme.palette.primary.main, 0.15)
-                    : alpha(theme.palette.primary.main, 0.05),
+                  backgroundColor:
+                    location.pathname === item.path
+                      ? alpha(theme.palette.primary.main, 0.15)
+                      : alpha(theme.palette.primary.main, 0.05),
                 },
               }}
               onClick={() => {
@@ -394,15 +415,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 setMobileOpen(false);
               }}
             >
-              <ListItemIcon 
-                sx={{ 
-                  color: location.pathname === item.path ? "primary.main" : "inherit",
+              <ListItemIcon
+                sx={{
+                  color: location.pathname === item.path ? 'primary.main' : 'inherit',
                   minWidth: 40,
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={item.text}
                 primaryTypographyProps={{
                   fontWeight: location.pathname === item.path ? 600 : 400,
@@ -416,14 +437,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <ListItemButton
             sx={{
               borderRadius: 2,
-              color: "error.main",
+              color: 'error.main',
               '&:hover': {
                 backgroundColor: alpha(theme.palette.error.main, 0.05),
               },
             }}
             onClick={handleLogout}
           >
-            <ListItemIcon sx={{ color: "error.main", minWidth: 40 }}>
+            <ListItemIcon sx={{ color: 'error.main', minWidth: 40 }}>
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText primary="Logout" />
@@ -438,8 +459,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             borderRadius: 2,
             backgroundColor: alpha(theme.palette.info.main, 0.1),
             border: `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <HelpOutlineIcon color="info" sx={{ mr: 1.5 }} />
@@ -457,16 +478,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          bgcolor: "background.paper",
-          color: "text.primary",
-          boxShadow: "none",
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+          boxShadow: 'none',
           borderBottom: `1px solid ${theme.palette.divider}`,
         }}
       >
@@ -476,43 +497,43 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { sm: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
-          
+
           <Box sx={{ flexGrow: 1 }} />
-          
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title="Help & Support">
               <IconButton
                 size="medium"
                 color="inherit"
-                sx={{ 
+                sx={{
                   mr: 1.5,
-                  color: "text.secondary",
+                  color: 'text.secondary',
                   bgcolor: alpha(theme.palette.grey[500], 0.08),
                   '&:hover': {
                     bgcolor: alpha(theme.palette.grey[500], 0.15),
-                  }
+                  },
                 }}
               >
                 <SupportAgentIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Notifications">
               <IconButton
                 size="medium"
                 color="inherit"
                 onClick={handleNotificationsOpen}
-                sx={{ 
+                sx={{
                   mr: 1.5,
-                  color: "text.secondary",
+                  color: 'text.secondary',
                   bgcolor: alpha(theme.palette.grey[500], 0.08),
                   '&:hover': {
                     bgcolor: alpha(theme.palette.grey[500], 0.15),
-                  }
+                  },
                 }}
               >
                 <Badge badgeContent={notifications.filter(n => !n.read).length} color="error">
@@ -520,52 +541,53 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </Badge>
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Settings">
               <IconButton
                 size="medium"
                 color="inherit"
                 onClick={handleSettingsOpen}
-                sx={{ 
+                sx={{
                   mr: 2,
-                  color: "text.secondary",
+                  color: 'text.secondary',
                   bgcolor: alpha(theme.palette.grey[500], 0.08),
                   '&:hover': {
                     bgcolor: alpha(theme.palette.grey[500], 0.15),
-                  }
+                  },
                 }}
               >
                 <SettingsIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Account settings">
-              <IconButton 
+              <IconButton
                 onClick={handleProfileMenuOpen}
                 size="small"
-                aria-controls={Boolean(anchorEl) ? "account-menu" : undefined}
+                aria-controls={anchorEl ? 'account-menu' : undefined}
                 aria-haspopup="true"
-                aria-expanded={Boolean(anchorEl) ? "true" : undefined}
+                aria-expanded={anchorEl ? 'true' : undefined}
                 sx={{
                   p: 0,
                   border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
                   '&:hover': {
                     border: `2px solid ${alpha(theme.palette.primary.main, 0.4)}`,
-                  }
+                  },
                 }}
               >
-                <Avatar 
-                  sx={{ 
-                    width: 32, 
+                <Avatar
+                  sx={{
+                    width: 32,
                     height: 32,
                   }}
                 >
-                  {user?.firstName?.[0]}{user?.lastName?.[0]}
+                  {user?.firstName?.[0]}
+                  {user?.lastName?.[0]}
                 </Avatar>
               </IconButton>
             </Tooltip>
           </Box>
-          
+
           <Menu
             anchorEl={anchorEl}
             id="account-menu"
@@ -575,8 +597,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             PaperProps={{
               elevation: 3,
               sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.1))",
+                overflow: 'visible',
+                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
                 mt: 1.5,
                 borderRadius: 2,
                 minWidth: 220,
@@ -588,8 +610,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 },
               },
             }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
             <Box sx={{ px: 2, pt: 1, pb: 0.5 }}>
               <Typography variant="subtitle2" fontWeight={600}>
@@ -600,35 +622,38 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Typography>
             </Box>
             <Divider sx={{ my: 1 }} />
-            <MenuItem onClick={() => navigate("/profile")} sx={{ borderRadius: 1, mx: 1, px: 1.5 }}>
+            <MenuItem onClick={() => navigate('/profile')} sx={{ borderRadius: 1, mx: 1, px: 1.5 }}>
               <ListItemIcon>
                 <PersonIcon fontSize="small" />
               </ListItemIcon>
               Profile
             </MenuItem>
-            <MenuItem onClick={() => navigate("/security")} sx={{ borderRadius: 1, mx: 1, px: 1.5 }}>
+            <MenuItem
+              onClick={() => navigate('/security')}
+              sx={{ borderRadius: 1, mx: 1, px: 1.5 }}
+            >
               <ListItemIcon>
                 <ShieldIcon fontSize="small" />
               </ListItemIcon>
               Security
             </MenuItem>
-            <MenuItem onClick={() => navigate("/billing")} sx={{ borderRadius: 1, mx: 1, px: 1.5 }}>
+            <MenuItem onClick={() => navigate('/billing')} sx={{ borderRadius: 1, mx: 1, px: 1.5 }}>
               <ListItemIcon>
                 <PaymentIcon fontSize="small" />
               </ListItemIcon>
               Billing
             </MenuItem>
             <Divider sx={{ my: 1 }} />
-            <MenuItem 
-              onClick={handleLogout} 
-              sx={{ 
-                color: "error.main", 
-                borderRadius: 1, 
-                mx: 1, 
+            <MenuItem
+              onClick={handleLogout}
+              sx={{
+                color: 'error.main',
+                borderRadius: 1,
+                mx: 1,
                 px: 1.5,
                 '&:hover': {
                   backgroundColor: alpha(theme.palette.error.main, 0.1),
-                }
+                },
               }}
             >
               <ListItemIcon>
@@ -637,7 +662,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               Logout
             </MenuItem>
           </Menu>
-          
+
           <Menu
             anchorEl={notificationsAnchor}
             id="notifications-menu"
@@ -647,43 +672,47 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             PaperProps={{
               elevation: 3,
               sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.15))",
+                overflow: 'visible',
+                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.15))',
                 mt: 1.5,
                 borderRadius: 2,
                 width: 320,
               },
             }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <Box sx={{ p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Box
+              sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            >
               <Typography variant="subtitle1" fontWeight={600}>
                 Notifications
               </Typography>
-              <Chip 
-                label={`${notifications.filter(n => !n.read).length} new`} 
-                size="small" 
-                color="primary" 
-                sx={{ height: 20, fontSize: "0.75rem" }} 
+              <Chip
+                label={`${notifications.filter(n => !n.read).length} new`}
+                size="small"
+                color="primary"
+                sx={{ height: 20, fontSize: '0.75rem' }}
               />
             </Box>
             <Divider />
             {notifications.length === 0 ? (
-              <Box sx={{ p: 4, textAlign: "center" }}>
+              <Box sx={{ p: 4, textAlign: 'center' }}>
                 <Typography variant="body2" color="text.secondary">
                   No notifications
                 </Typography>
               </Box>
             ) : (
               <List sx={{ py: 0 }}>
-                {notifications.map((notification) => (
-                  <ListItem 
-                    key={notification.id} 
-                    sx={{ 
-                      px: 2, 
+                {notifications.map(notification => (
+                  <ListItem
+                    key={notification.id}
+                    sx={{
+                      px: 2,
                       py: 1.5,
-                      backgroundColor: notification.read ? "transparent" : alpha(theme.palette.primary.light, 0.05),
+                      backgroundColor: notification.read
+                        ? 'transparent'
+                        : alpha(theme.palette.primary.light, 0.05),
                     }}
                   >
                     <ListItemText
@@ -699,14 +728,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       }
                     />
                     {!notification.read && (
-                      <Box 
-                        sx={{ 
-                          width: 8, 
-                          height: 8, 
-                          borderRadius: "50%", 
-                          backgroundColor: "primary.main",
+                      <Box
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          backgroundColor: 'primary.main',
                           ml: 1,
-                        }} 
+                        }}
                       />
                     )}
                   </ListItem>
@@ -714,21 +743,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </List>
             )}
             <Divider />
-            <Box sx={{ p: 1.5, textAlign: "center" }}>
+            <Box sx={{ p: 1.5, textAlign: 'center' }}>
               <Button
                 size="small"
                 color="primary"
-                sx={{ 
-                  fontSize: "0.75rem",
+                sx={{
+                  fontSize: '0.75rem',
                   borderRadius: 1,
-                  textTransform: "none",
+                  textTransform: 'none',
                 }}
               >
                 View all notifications
               </Button>
             </Box>
           </Menu>
-          
+
           <Menu
             anchorEl={settingsAnchor}
             id="settings-menu"
@@ -738,15 +767,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             PaperProps={{
               elevation: 3,
               sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.15))",
+                overflow: 'visible',
+                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.15))',
                 mt: 1.5,
                 borderRadius: 2,
                 width: 200,
               },
             }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
             <MenuItem sx={{ borderRadius: 1, mx: 1 }}>
               <ListItemIcon>
@@ -763,10 +792,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Menu>
         </Toolbar>
       </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      >
+      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -775,9 +801,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             keepMounted: true, // Better open performance on mobile
           }}
           sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
               width: drawerWidth,
             },
           }}
@@ -787,9 +813,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
+            display: { xs: 'none', sm: 'block' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
               width: drawerWidth,
             },
           }}
@@ -804,8 +830,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           flexGrow: 1,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           p: 3,
-          bgcolor: "background.default",
-          minHeight: "100vh",
+          bgcolor: 'background.default',
+          minHeight: '100vh',
         }}
       >
         <Toolbar />

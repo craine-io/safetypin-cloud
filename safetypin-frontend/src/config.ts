@@ -1,20 +1,25 @@
 // Application configuration
+import apiConfig from './docker-config';
+
+const isRunningInDocker = process.env.REACT_APP_RUNTIME_ENV === 'docker';
 
 const config = {
   // API configuration
   api: {
-    baseUrl: process.env.REACT_APP_API_URL || 'https://api.safetypin-oss.example.com',
+    baseUrl:
+      process.env.REACT_APP_API_URL ||
+      (isRunningInDocker ? apiConfig.apiUrl : 'http://localhost:3000'),
     timeout: 30000, // 30 seconds
     retry: 3,
   },
-  
+
   // Authentication configuration
   auth: {
     region: process.env.REACT_APP_AUTH_REGION || 'us-east-1',
     userPoolId: process.env.REACT_APP_USER_POOL_ID,
     userPoolWebClientId: process.env.REACT_APP_USER_POOL_WEB_CLIENT_ID,
   },
-  
+
   // SFTP server configuration
   sftp: {
     defaultRegion: 'us-east-1',

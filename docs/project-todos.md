@@ -16,6 +16,18 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
    - ✅ Created Docker containerization for the entire stack (PostgreSQL, backend, frontend)
    - ✅ Set up development configuration with hot reloading
    - ✅ Created production Docker configuration with optimized images
+   
+3. **Backend API Implementation**
+   - ✅ Created Express server setup for handling API requests
+   - ✅ Implemented basic health check and status API endpoints
+   - ✅ Added CORS, security headers, and error handling middleware
+   - ✅ Improved robustness to handle database connection failures
+   - ✅ Fixed TypeScript errors and type definitions
+
+4. **Frontend-Backend Integration**
+   - ✅ Set up API service for communicating with backend
+   - ✅ Added API testing component
+   - ✅ Fixed environment configurations for development and production
 
 ## Pending Tasks - Backend
 
@@ -159,3 +171,26 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 2. Start building the API endpoints for core functionality 
 3. Implement the cloud integration services within the backend
 4. Begin developing the frontend authentication components
+
+## Troubleshooting Notes
+
+### Running the Frontend and Backend with Docker Compose
+
+- Use the provided script to start all containerized services:
+  - Windows: Run `docker-up.bat` from the project root
+  - Linux/Mac: Run `./docker-up.sh` from the project root
+- The containerized services will be available at:
+  - Backend API: http://localhost:3000
+  - Frontend UI: http://localhost:3001
+  - PostgreSQL: localhost:5432
+- When running in Docker, the frontend communicates with the backend using the internal Docker service name: `http://backend:3000`
+- If you make changes to Docker configuration, rebuild with `docker-compose -f docker-compose.dev.yml up --build`
+
+### Running Without Docker (Local Development)
+
+- The backend API server runs on port 3000 by default
+- The frontend development server should run on port 3001
+- To start the frontend on the correct port, either:
+  - Use the script: `npm run start:alt` which sets PORT=3001
+  - Manually set PORT: `set PORT=3001 && npm start` (Windows) or `PORT=3001 npm start` (Linux/Mac)
+- If you're experiencing issues with the frontend connecting to the API, check the API Test page at `/api-test`

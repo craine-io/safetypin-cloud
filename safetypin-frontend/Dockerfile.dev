@@ -16,6 +16,7 @@ EXPOSE 3000
 
 # Set Node to development mode
 ENV NODE_ENV=development
+ENV PORT=3000
 
 # Run development server with hot reloading
 CMD ["npm", "start"]
