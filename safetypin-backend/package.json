@@ -1,21 +1,55 @@
 {
-    "name": "safetypin-backend",
-    "version": "0.1.0",
-    "author": "Craine Technology Labs",
-    "description": "Backend services for SafetyPin OSS",
-    "main": "index.js",
-    "scripts": {
-      "test": "jest"
-    },
-    "dependencies": {
-      "aws-sdk": "^2.1000.0",
-      "uuid": "^9.0.0",
-      "joi": "^17.0.0",
-      "jsonwebtoken": "^9.0.0",
-      "jwks-rsa": "^3.0.0"
-    },
-    "devDependencies": {
-      "aws-sdk-mock": "^5.0.0",
-      "jest": "^29.0.0"
-    }
+  "name": "safetypin-backend",
+  "version": "0.1.0",
+  "author": "Craine Technology Labs",
+  "description": "Backend services for SafetyPin OSS",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "migrate:up": "ts-node src/lib/database/migrator.ts up",
+    "migrate:down": "ts-node src/lib/database/migrator.ts down",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1000.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "express-validator": "^7.0.0",
+    "helmet": "^7.0.0",
+    "joi": "^17.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "jwks-rsa": "^3.0.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.10.0",
+    "saml2-js": "^4.0.0",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.14",
+    "@types/jest": "^29.5.0",
+    "@types/jsonwebtoken": "^9.0.0",
+    "@types/morgan": "^1.9.5",
+    "@types/node": "^18.15.0",
+    "@types/pg": "^8.10.0",
+    "@types/uuid": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "aws-sdk-mock": "^5.0.0",
+    "eslint": "^8.35.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.0"
   }
+}

@@ -22,12 +22,54 @@ safetypin-oss/
 └── safetypin-infrastructure/ # The code that sets up AWS resources
 ```
 
-## Getting Started
+## Getting Started with Docker
+
+The easiest way to run SafetyPin OSS locally is using Docker Compose:
+
+### Prerequisites
+
+- Docker and Docker Compose installed on your machine
+- Git
+
+### Running the Development Environment
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/safetypin-oss.git
+   cd safetypin-oss
+   ```
+
+2. Start the development environment:
+   ```bash
+   docker-compose -f docker-compose.dev.yml up
+   ```
+
+3. Access the application:
+   - Frontend: http://localhost:3001
+   - Backend API: http://localhost:3000
+
+4. Development:
+   - The frontend and backend source directories are mounted as volumes
+   - Changes will be automatically reloaded
+
+### Running the Production Environment
+
+1. Build and start the production environment:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. Access the application:
+   - Frontend: http://localhost
+   - Backend API: http://localhost:3000
+
+## Manual Setup (without Docker)
 
 ### Requirements
 
 Before you start, make sure you have:
 - Node.js 14 or newer
+- PostgreSQL 14 or newer
 - An AWS account
 - AWS CLI installed and configured
 - Git
@@ -46,19 +88,16 @@ Before you start, make sure you have:
    - Run the installer (use default settings)
    - To verify installation, open Command Prompt and type: `git --version`
 
-3. **Install AWS CLI**:
-   - Download the AWS CLI installer from [AWS website](https://aws.amazon.com/cli/)
-   - Run the installer
-   - Open Command Prompt and configure AWS: `aws configure`
-   - Enter your AWS Access Key, Secret Key, region (e.g., us-east-1), and output format (json)
+3. **Install PostgreSQL**:
+   - Download the installer from [postgresql.org](https://www.postgresql.org/download/windows/)
+   - Run the installer and remember the password you set for the postgres user
+   - Add PostgreSQL bin directory to your PATH if the installer doesn't do it
 
 4. **Clone the Repository**:
    - Open Command Prompt
    - Navigate to where you want to store the project: `cd C:\Projects` (or your preferred location)
    - Clone the repo: `git clone https://github.com/your-username/safetypin-oss.git`
    - Go to project folder: `cd safetypin-oss`
-
-📺 **Need help setting up Windows?** Watch [Node.js and NPM on Windows](https://www.youtube.com/watch?v=X-FPCwZFU_8)
 
 ### Mac Setup
 
@@ -70,22 +109,42 @@ Before you start, make sure you have:
    - In Terminal, run: `brew install node`
    - Verify with: `node --version`
 
-3. **Install Git** (if not already installed):
-   - In Terminal, run: `brew install git`
-   - Verify with: `git --version`
+3. **Install PostgreSQL**:
+   - In Terminal, run: `brew install postgresql`
+   - Start the service: `brew services start postgresql`
 
-4. **Install AWS CLI**:
-   - In Terminal, run: `brew install awscli`
-   - Configure AWS: `aws configure`
-   - Enter your AWS Access Key, Secret Key, region (e.g., us-east-1), and output format (json)
-
-5. **Clone the Repository**:
+4. **Clone the Repository**:
    - Open Terminal
    - Navigate to where you want to store the project: `cd ~/Projects` (or your preferred location)
    - Clone the repo: `git clone https://github.com/your-username/safetypin-oss.git`
    - Go to project folder: `cd safetypin-oss`
 
-📺 **Need help setting up Mac?** Watch [Node.js Setup on Mac](https://www.youtube.com/watch?v=0hh-vdlU4Xw)
+### Setting Up the Backend
+
+1. Go to the backend folder:
+   ```
+   cd safetypin-backend
+   ```
+
+2. Copy the example environment file:
+   ```
+   cp .env.example .env
+   ```
+
+3. Install the packages:
+   ```
+   npm install
+   ```
+
+4. Run database migrations:
+   ```
+   npm run migrate:up
+   ```
+
+5. Start the development server:
+   ```
+   npm run dev
+   ```
 
 ### Setting Up the Frontend
 
@@ -106,76 +165,6 @@ Before you start, make sure you have:
 
 4. Open your browser and go to: http://localhost:3000
 
-### Fixing Git Line Ending Issues
-
-If you encounter warnings about line endings (LF vs. CRLF), follow these steps:
-
-1. Ensure you have the correct Git configuration files:
-   ```
-   # Check if the files exist at the root of the repository
-   ls -la .gitattributes .gitignore
-   ```
-
-2. If needed, remove node_modules from Git tracking:
-   ```
-   git rm -r --cached safetypin-frontend/node_modules
-   ```
-
-3. Add and commit the Git configuration files:
-   ```
-   git add .gitattributes .gitignore
-   git commit -m "Add Git configuration files"
-   ```
-
-4. For new projects, consider configuring Git line endings:
-   ```
-   # For Windows:
-   git config --global core.autocrlf true
-   
-   # For Mac/Linux:
-   git config --global core.autocrlf input
-   ```
-
-📺 **Need help with React?** Watch [React JS Crash Course](https://www.youtube.com/watch?v=w7ejDZ8SWv8)
-
-### Setting Up the Backend
-
-1. Go to the backend folder:
-   ```
-   cd safetypin-backend
-   ```
-
-2. Install the packages:
-   ```
-   npm install
-   ```
-
-3. Deploy to AWS:
-   ```
-   npx serverless deploy
-   ```
-
-📺 **Need help with AWS Serverless?** Watch [AWS Serverless Tutorial](https://www.youtube.com/watch?v=n5oVQ4HBaHY)
-
-### Setting Up the Infrastructure
-
-1. Go to the infrastructure folder:
-   ```
-   cd safetypin-infrastructure
-   ```
-
-2. Install the packages:
-   ```
-   npm install
-   ```
-
-3. Deploy the AWS infrastructure:
-   ```
-   npx cdk deploy
-   ```
-
-📺 **Need help with AWS CDK?** Watch [AWS CDK Tutorial](https://www.youtube.com/watch?v=Cf2fuE1QH7c)
-
 ## How to Use SafetyPin OSS
 
 ### Creating an SFTP Connection
@@ -194,18 +183,12 @@ If you encounter warnings about line endings (LF vs. CRLF), follow these steps:
 3. Copy the hostname, username, and password
 4. Share these credentials securely with your client
 
-You can connect using:
-- FileZilla (Easy for beginners): [FileZilla Tutorial](https://www.youtube.com/watch?v=adxmlHDim6c)
-- WinSCP on Windows: [WinSCP Tutorial](https://www.youtube.com/watch?v=hRoaI0EANKc)
-- Command line SFTP on Mac or Linux: Type `sftp username@hostname`
-
 ### Monitoring File Transfers
 
 1. Go to the "Connections" page
 2. Select your connection
 3. Navigate to the "Activity Log" tab
 4. View all file transfers, including timestamps, file sizes, and status
-5. Filter activity by date, event type, or status
 
 ## Features
 
@@ -236,43 +219,18 @@ You can connect using:
 - File type filtering
 - Size limits
 
-### Billing and Usage
-- Pay-as-you-go pricing
-- Usage statistics
-- Billing history
+## Contributing
 
-## Troubleshooting
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add some amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
-### Client Connection Issues
-- Verify the connection hasn't expired
-- Check if IP restrictions are enabled and client's IP is allowed
-- Confirm the client is using the correct hostname, port, username, and password
-- Ensure the client's network allows SFTP traffic
+## License
 
-### File Transfer Problems
-- Check if files exceed the maximum size limit
-- Verify file types match the allowed extensions
-- Confirm there's sufficient space in the S3 bucket
-- Check S3 bucket permissions and policies
+SafetyPin OSS is available under a dual license model:
+1. AGPL v3.0 for non-commercial use
+2. Commercial license for commercial use
 
-### Deployment Problems
-- Verify your AWS credentials are set up correctly
-- Make sure you have the right permissions in your AWS account
-- Check the deployment logs for specific error messages
-- Ensure AWS Transfer Family service is available in your region
-
-## Security Notes
-
-- Never share connection credentials via unsecured channels
-- Use time-limited connections appropriate for the use case
-- Enable IP restrictions whenever possible
-- Regularly review active connections and transfer logs
-- Configure appropriate S3 bucket policies for additional security
-
-## Getting Help
-
-If you need more help:
-- Check the troubleshooting section above
-- Watch the suggested YouTube tutorials
-- Open an issue on GitHub
-- Contact Craine Technology Labs for professional support options
+See the LICENSE file for details.

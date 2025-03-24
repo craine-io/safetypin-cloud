@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:14-alpine
+    container_name: safetypin-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: safetypin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API service
+  backend:
+    build:
+      context: ./safetypin-backend
+      dockerfile: Dockerfile
+    container_name: safetypin-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=safetypin
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - PORT=3000
+      - RUN_MIGRATIONS=true
+      - JWT_SECRET=change-this-in-production
+      - DEV_ENCRYPTION_KEY=change-this-in-production
+    ports:
+      - "3000:3000"
+
+  # Frontend application
+  frontend:
+    build:
+      context: ./safetypin-frontend
+      dockerfile: Dockerfile
+    container_name: safetypin-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
