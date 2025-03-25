@@ -45,7 +45,7 @@ The easiest way to run SafetyPin OSS locally is using Docker Compose:
    ```
 
 3. Access the application:
-   - Frontend: http://localhost:3001
+   - Frontend: http://localhost:3001 (maps to port 3000 on the container)
    - Backend API: http://localhost:3000
 
 4. Development:
@@ -164,6 +164,8 @@ Before you start, make sure you have:
    ```
 
 4. Open your browser and go to: http://localhost:3000
+   - Note: When running locally without Docker, the frontend runs on port 3000
+   - When using Docker, access the frontend at http://localhost:3001
 
 ## How to Use SafetyPin OSS
 
