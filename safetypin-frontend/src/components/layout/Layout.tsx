@@ -5,6 +5,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LogoutIcon from '@mui/icons-material/Logout';
 // Icons
@@ -49,6 +50,7 @@ import {
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { features } from '../../config/features';
 import { useAuth } from '../auth/AuthContext';
 
 const drawerWidth = 280;
@@ -113,10 +115,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { text: 'API Test', icon: <BugReportIcon />, path: '/api-test' },
   ];
 
+  // Create settings items array, conditionally including billing based on feature flag
   const settingsItems = [
     { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
     { text: 'Security', icon: <ShieldIcon />, path: '/security' },
-    { text: 'Billing', icon: <PaymentIcon />, path: '/billing' },
+    // Only include billing in navigation if the feature is enabled
+    ...(features.billing
+      ? [{ text: 'Billing', icon: <PaymentIcon />, path: '/billing' }]
+      : [{ text: 'OSS Edition', icon: <InfoIcon />, path: '/billing' }]),
   ];
 
   // Mock notification data
@@ -639,9 +645,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </MenuItem>
             <MenuItem onClick={() => navigate('/billing')} sx={{ borderRadius: 1, mx: 1, px: 1.5 }}>
               <ListItemIcon>
-                <PaymentIcon fontSize="small" />
+                {features.billing ? (
+                  <PaymentIcon fontSize="small" />
+                ) : (
+                  <InfoIcon fontSize="small" />
+                )}
               </ListItemIcon>
-              Billing
+              {features.billing ? 'Billing' : 'OSS Edition'}
             </MenuItem>
             <Divider sx={{ my: 1 }} />
             <MenuItem

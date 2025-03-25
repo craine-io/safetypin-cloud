@@ -42,16 +42,23 @@ const APITest: React.FC = () => {
       const status = await apiService.get<APIStatus>('/api/status');
       setApiStatus(status);
       console.log('API Status:', status);
-    } catch (err: Error | unknown) {
+    } catch (err: unknown) {
       console.error('API connection error:', err);
       let errorMessage = 'Failed to connect to the API server.';
 
       // Extract more detailed error information
-      if (err.message) {
+      if (err && typeof err === 'object' && 'message' in err) {
         errorMessage += ` Error: ${err.message}`;
       }
 
-      if (err.response) {
+      if (
+        err &&
+        typeof err === 'object' &&
+        'response' in err &&
+        err.response &&
+        typeof err.response === 'object' &&
+        'status' in err.response
+      ) {
         errorMessage += ` Status: ${err.response.status}`;
       }
 
@@ -84,9 +91,13 @@ const APITest: React.FC = () => {
         message: 'Connected to custom URL successfully',
         timestamp: data.timestamp || new Date().toISOString(),
       });
-    } catch (err: Error | unknown) {
+    } catch (err: unknown) {
       console.error('Custom URL test error:', err);
-      setError(`Failed to connect to custom URL: ${err.message}`);
+      setError(
+        `Failed to connect to custom URL: ${
+          err && typeof err === 'object' && 'message' in err ? err.message : 'Unknown error'
+        }`
+      );
     } finally {
       setLoading(false);
     }

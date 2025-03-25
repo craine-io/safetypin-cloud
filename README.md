@@ -45,7 +45,7 @@ The easiest way to run SafetyPin OSS locally is using Docker Compose:
    ```
 
 3. Access the application:
-   - Frontend: http://localhost:3001
+   - Frontend: http://localhost:3001 (maps to port 3000 on the container)
    - Backend API: http://localhost:3000
 
 4. Development:
@@ -164,6 +164,8 @@ Before you start, make sure you have:
    ```
 
 4. Open your browser and go to: http://localhost:3000
+   - Note: When running locally without Docker, the frontend runs on port 3000
+   - When using Docker, access the frontend at http://localhost:3001
 
 ## How to Use SafetyPin OSS
 
@@ -227,10 +229,36 @@ Before you start, make sure you have:
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
-## License
+## License and Editions
 
-SafetyPin OSS is available under a dual license model:
-1. AGPL v3.0 for non-commercial use
-2. Commercial license for commercial use
+SafetyPin is available in multiple editions to suit different needs:
 
-See the LICENSE file for details.
+### SafetyPin OSS Edition
+- Licensed under AGPL v3.0 for non-commercial use
+- Includes all core SFTP and file transfer functionality
+- Self-hosted on your own infrastructure
+- No usage limits for servers or storage
+- See [LICENSE](./LICENSE) file for full details
+
+### SafetyPin Cloud Edition (Commercial)
+- Requires a paid commercial license
+- Includes all OSS features plus:
+  - Billing and subscription management
+  - Advanced security features
+  - Multi-tenant capabilities
+  - Premium support
+- Usage based on subscription plan
+
+### SafetyPin Enterprise Edition (Commercial)
+- Custom commercial licensing
+- Includes all Cloud features plus:
+  - Custom deployment options
+  - Advanced compliance features
+  - Enterprise-grade support
+  - Custom integrations
+
+For commercial licensing inquiries, please contact Craine Technology Labs at contact@crainetech.com
+
+### Feature Flags
+
+SafetyPin uses a feature flag system to manage edition-specific features. See the [Feature Flags Documentation](./docs/feature-flags.md) for more information.

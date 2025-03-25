@@ -46,49 +46,49 @@ export interface ServerProvisionResult {
 // Server mock data
 const mockServers: Server[] = [
   {
-    id: "srv-001",
-    name: "Production Server",
-    host: "prod.example.com",
-    status: "Online",
-    type: "SFTP",
+    id: 'srv-001',
+    name: 'Production Server',
+    host: 'prod.example.com',
+    status: 'Online',
+    type: 'SFTP',
     storageUsed: 85,
-    lastConnection: "10 minutes ago",
-    region: "us-east-1",
-    username: "sftp-user"
+    lastConnection: '10 minutes ago',
+    region: 'us-east-1',
+    username: 'sftp-user',
   },
   {
-    id: "srv-002",
-    name: "Development Server",
-    host: "dev.example.com",
-    status: "Online",
-    type: "SFTP",
+    id: 'srv-002',
+    name: 'Development Server',
+    host: 'dev.example.com',
+    status: 'Online',
+    type: 'SFTP',
     storageUsed: 42,
-    lastConnection: "3 hours ago",
-    region: "us-west-1",
-    username: "sftp-user"
+    lastConnection: '3 hours ago',
+    region: 'us-west-1',
+    username: 'sftp-user',
   },
   {
-    id: "srv-003",
-    name: "Testing Server",
-    host: "test.example.com",
-    status: "Offline",
-    type: "SFTP",
+    id: 'srv-003',
+    name: 'Testing Server',
+    host: 'test.example.com',
+    status: 'Offline',
+    type: 'SFTP',
     storageUsed: 0,
-    lastConnection: "2 days ago",
-    region: "eu-west-1",
-    username: "sftp-user"
+    lastConnection: '2 days ago',
+    region: 'eu-west-1',
+    username: 'sftp-user',
   },
   {
-    id: "srv-004",
-    name: "Backup Server",
-    host: "backup.example.com",
-    status: "Online",
-    type: "SFTP",
+    id: 'srv-004',
+    name: 'Backup Server',
+    host: 'backup.example.com',
+    status: 'Online',
+    type: 'SFTP',
     storageUsed: 67,
-    lastConnection: "5 hours ago",
-    region: "us-east-1",
-    username: "sftp-user"
-  }
+    lastConnection: '5 hours ago',
+    region: 'us-east-1',
+    username: 'sftp-user',
+  },
 ];
 
 class ServerService {
@@ -98,11 +98,11 @@ class ServerService {
     if (api.shouldUseMockData()) {
       return Promise.resolve([...mockServers]);
     }
-    
+
     // Otherwise, call the real API
     return api.get<Server[]>('/servers');
   }
-  
+
   // Get a specific server
   async getServer(id: string): Promise<Server> {
     // Use mock data if in mock mode
@@ -111,13 +111,13 @@ class ServerService {
       if (!server) {
         throw new Error(`Server not found: ${id}`);
       }
-      return Promise.resolve({...server});
+      return Promise.resolve({ ...server });
     }
-    
+
     // Otherwise, call the real API
     return api.get<Server>(`/servers/${id}`);
   }
-  
+
   // Create a new server
   async createServer(params: ServerCreationParams): Promise<ServerProvisionResult> {
     // Use mock data if in mock mode
@@ -131,33 +131,37 @@ class ServerService {
         storageUsed: 0,
         lastConnection: 'Never',
         region: params.region,
-        username: params.username || 'sftp-user'
+        username: params.username || 'sftp-user',
       };
-      
+
       // Simulate provisioning (would happen on the backend)
       setTimeout(() => {
         newServer.status = 'Online';
       }, 3000);
-      
+
       // Simulate adding to the list
       mockServers.push(newServer);
-      
+
       return Promise.resolve({
         server: newServer,
         credentials: {
           host: newServer.host,
           port: 22,
           username: newServer.username || 'sftp-user',
-          privateKey: params.securityOptions?.sshKeyType === 'generate' ? 
-            'MOCK_PRIVATE_KEY_CONTENT' : undefined
-        }
+          privateKey:
+            params.securityOptions?.sshKeyType === 'generate'
+              ? 'MOCK_PRIVATE_KEY_CONTENT'
+              : undefined,
+        },
       });
     }
-    
+
     // Otherwise, call the real API
-    return api.post<ServerProvisionResult>('/servers', params);
+    // Convert ServerCreationParams to a Record<string, unknown> to match API method signature
+    const apiParams = params as unknown as Record<string, unknown>;
+    return api.post<ServerProvisionResult>('/servers', apiParams);
   }
-  
+
   // Delete a server
   async deleteServer(id: string): Promise<void> {
     // Use mock data if in mock mode
@@ -169,7 +173,7 @@ class ServerService {
       mockServers.splice(index, 1);
       return Promise.resolve();
     }
-    
+
     // Otherwise, call the real API
     return api.delete<void>(`/servers/${id}`);
   }

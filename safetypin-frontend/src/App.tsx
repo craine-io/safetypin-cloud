@@ -13,13 +13,16 @@ import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 // Layout
 import Layout from './components/layout/Layout';
+// Import both billing components
 import Billing from './components/settings/Billing';
+import BillingOSS from './components/settings/BillingOSS';
 import Profile from './components/settings/Profile';
 import Security from './components/settings/Security';
 import ServerDetails from './components/sftp/ServerDetails';
 import ServerList from './components/sftp/ServerList';
 import ServerProvision from './components/sftp/ServerProvision';
 import WebClient from './components/sftp/WebClient';
+import { features } from './config/features';
 // Theme
 import theme from './theme';
 
@@ -108,11 +111,7 @@ const App: React.FC = () => {
 
             <Route
               path="/billing"
-              element={
-                <Layout>
-                  <Billing />
-                </Layout>
-              }
+              element={<Layout>{features.billing ? <Billing /> : <BillingOSS />}</Layout>}
             />
           </Routes>
         </Router>

@@ -4,6 +4,12 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 
 ## Completed Tasks
 
+0. **OSS/Commercial Edition Separation**
+   - ✅ Created feature flag system to control edition-specific features
+   - ✅ Added separation between OSS and Commercial editions for billing features
+   - ✅ Created an OSS-specific billing page that explains the licensing
+   - ✅ Added license utility helpers to simplify edition checking
+
 1. **Database Design and Architecture**
    - ✅ Selected PostgreSQL as the primary database technology for HIPAA compliance
    - ✅ Created comprehensive database schema for authentication, MFA, audit logging, etc.
@@ -23,11 +29,14 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
    - ✅ Added CORS, security headers, and error handling middleware
    - ✅ Improved robustness to handle database connection failures
    - ✅ Fixed TypeScript errors and type definitions
+   - ✅ Fixed error handling in APITest component for unknown types
+   - ✅ Fixed type issues in servers.ts with API parameters
 
 4. **Frontend-Backend Integration**
    - ✅ Set up API service for communicating with backend
    - ✅ Added API testing component
    - ✅ Fixed environment configurations for development and production
+   - ✅ Fixed linting issues in BillingOSS.tsx component
 
 5. **Repository Implementations** (High Priority)
    - ✅ Implement remaining PostgreSQL repositories:
@@ -194,3 +203,10 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
   - Use the script: `npm run start:alt` which sets PORT=3001
   - Manually set PORT: `set PORT=3001 && npm start` (Windows) or `PORT=3001 npm start` (Linux/Mac)
 - If you're experiencing issues with the frontend connecting to the API, check the API Test page at `/api-test`
+
+### TypeScript Type Safety
+
+- When working with error handling, remember to properly type check `unknown` error types
+- Use type guards (e.g., `typeof err === 'object' && err !== null && 'property' in err`) to safely access properties
+- When using API methods that require `Record<string, unknown>`, you may need to cast custom interfaces using `as unknown as Record<string, unknown>`
+- Run `npm run type-check` regularly to catch type issues before they cause runtime problems
