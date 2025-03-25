@@ -1,73 +1,107 @@
-import { UserRepository } from './user.repository';
-import { OrganizationRepository } from './organization.repository';
-import { IdentityProviderRepository } from './identity-provider.repository';
-import { SessionRepository } from './session.repository';
-import { MfaRepository } from './mfa.repository';
-import { AuditRepository } from './audit.repository';
-import { PermissionRepository } from './permission.repository';
-import { CloudProviderRepository, CloudCredentialRepository } from './cloud.repository';
+import { 
+  UserRepository,
+  OrganizationRepository,
+  IdentityProviderRepository,
+  SessionRepository,
+  MfaRepository,
+  AuditRepository,
+  PermissionRepository,
+  CloudProviderRepository,
+  CloudCredentialRepository
+} from './index';
 
-// Import implementations
-import { UserPostgresRepository } from './postgres/user-postgres.repository';
-// Other repository implementations will be imported as they are implemented
-
-export type DatabaseType = 'postgres' | 'mysql' | 'mongodb';
+import {
+  UserPostgresRepository,
+  OrganizationPostgresRepository,
+  IdentityProviderPostgresRepository,
+  SessionPostgresRepository,
+  MfaPostgresRepository,
+  AuditPostgresRepository,
+  PermissionPostgresRepository,
+  CloudProviderPostgresRepository,
+  CloudCredentialPostgresRepository
+} from './postgres';
 
 export class RepositoryFactory {
-  private static instance: RepositoryFactory;
-  private databaseType: DatabaseType;
+  private static userRepository: UserRepository;
+  private static organizationRepository: OrganizationRepository;
+  private static identityProviderRepository: IdentityProviderRepository;
+  private static sessionRepository: SessionRepository;
+  private static mfaRepository: MfaRepository;
+  private static auditRepository: AuditRepository;
+  private static permissionRepository: PermissionRepository;
+  private static cloudProviderRepository: CloudProviderRepository;
+  private static cloudCredentialRepository: CloudCredentialRepository;
   
-  // Repository instances
-  private userRepository: UserRepository;
-  // Other repositories will be added here
-  
-  private constructor(databaseType: DatabaseType = 'postgres') {
-    this.databaseType = databaseType;
-    this.initializeRepositories();
-  }
-  
-  public static getInstance(databaseType: DatabaseType = 'postgres'): RepositoryFactory {
-    if (!RepositoryFactory.instance) {
-      RepositoryFactory.instance = new RepositoryFactory(databaseType);
+  // UserRepository
+  static getUserRepository(): UserRepository {
+    if (!this.userRepository) {
+      this.userRepository = new UserPostgresRepository();
     }
-    
-    return RepositoryFactory.instance;
-  }
-  
-  private initializeRepositories(): void {
-    switch (this.databaseType) {
-      case 'postgres':
-        this.userRepository = new UserPostgresRepository();
-        // Initialize other PostgreSQL repositories
-        break;
-        
-      case 'mysql':
-        // MySQL implementations would go here
-        throw new Error('MySQL repositories not yet implemented');
-        
-      case 'mongodb':
-        // MongoDB implementations would go here
-        throw new Error('MongoDB repositories not yet implemented');
-        
-      default:
-        throw new Error(`Unsupported database type: ${this.databaseType}`);
-    }
-  }
-  
-  // Repository getters
-  public getUserRepository(): UserRepository {
     return this.userRepository;
   }
   
-  // Other repository getters will be added here
-}
-
-// Helper function to get repositories
-export function getRepositories(databaseType: DatabaseType = 'postgres') {
-  const factory = RepositoryFactory.getInstance(databaseType);
+  // OrganizationRepository
+  static getOrganizationRepository(): OrganizationRepository {
+    if (!this.organizationRepository) {
+      this.organizationRepository = new OrganizationPostgresRepository();
+    }
+    return this.organizationRepository;
+  }
   
-  return {
-    userRepository: factory.getUserRepository(),
-    // Other repositories will be added here
-  };
+  // IdentityProviderRepository
+  static getIdentityProviderRepository(): IdentityProviderRepository {
+    if (!this.identityProviderRepository) {
+      this.identityProviderRepository = new IdentityProviderPostgresRepository();
+    }
+    return this.identityProviderRepository;
+  }
+  
+  // SessionRepository
+  static getSessionRepository(): SessionRepository {
+    if (!this.sessionRepository) {
+      this.sessionRepository = new SessionPostgresRepository();
+    }
+    return this.sessionRepository;
+  }
+  
+  // MfaRepository
+  static getMfaRepository(): MfaRepository {
+    if (!this.mfaRepository) {
+      this.mfaRepository = new MfaPostgresRepository();
+    }
+    return this.mfaRepository;
+  }
+  
+  // AuditRepository
+  static getAuditRepository(): AuditRepository {
+    if (!this.auditRepository) {
+      this.auditRepository = new AuditPostgresRepository();
+    }
+    return this.auditRepository;
+  }
+  
+  // PermissionRepository
+  static getPermissionRepository(): PermissionRepository {
+    if (!this.permissionRepository) {
+      this.permissionRepository = new PermissionPostgresRepository();
+    }
+    return this.permissionRepository;
+  }
+  
+  // CloudProviderRepository
+  static getCloudProviderRepository(): CloudProviderRepository {
+    if (!this.cloudProviderRepository) {
+      this.cloudProviderRepository = new CloudProviderPostgresRepository();
+    }
+    return this.cloudProviderRepository;
+  }
+  
+  // CloudCredentialRepository
+  static getCloudCredentialRepository(): CloudCredentialRepository {
+    if (!this.cloudCredentialRepository) {
+      this.cloudCredentialRepository = new CloudCredentialPostgresRepository();
+    }
+    return this.cloudCredentialRepository;
+  }
 }

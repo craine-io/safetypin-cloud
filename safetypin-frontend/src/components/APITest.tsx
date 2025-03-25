@@ -231,6 +231,16 @@ const APITest: React.FC = () => {
             backend:3000
           </Button>
         </Box>
+
+        {isDocker && (
+          <Alert severity="info" sx={{ mt: 2 }}>
+            <Typography variant="body2">
+              In Docker development environment, the API is configured to use{' '}
+              <strong>localhost:3000</strong> for docker-compose compatibility. If the API is not
+              responding, ensure the backend container is running and ports are correctly mapped.
+            </Typography>
+          </Alert>
+        )}
       </Box>
     </Paper>
   );

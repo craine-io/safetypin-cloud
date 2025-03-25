@@ -8,3 +8,6 @@ export * from './mfa.repository';
 export * from './audit.repository';
 export * from './permission.repository';
 export * from './cloud.repository';
+
+// Export the repository factory
+export * from './repository-factory';

@@ -29,19 +29,19 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
    - ✅ Added API testing component
    - ✅ Fixed environment configurations for development and production
 
-## Pending Tasks - Backend
-
-1. **Repository Implementations** (High Priority)
-   - ⬜ Implement remaining PostgreSQL repositories:
-     - ⬜ Organization Repository
-     - ⬜ Identity Provider Repository
-     - ⬜ Session and MFA Repositories
-     - ⬜ Audit Repository
-     - ⬜ Permission Repository
-     - ⬜ Cloud Provider Repository
+5. **Repository Implementations** (High Priority)
+   - ✅ Implement remaining PostgreSQL repositories:
+     - ✅ Organization Repository
+     - ✅ Identity Provider Repository
+     - ✅ Session and MFA Repositories
+     - ✅ Audit Repository
+     - ✅ Permission Repository
+     - ✅ Cloud Provider Repository
    - ⬜ Add comprehensive test coverage for all repositories
 
-2. **Service Layer Development** (High Priority)
+## Pending Tasks - Backend
+
+1. **Service Layer Development** (High Priority)
    - ⬜ Create authentication services that utilize repositories:
      - ⬜ User Service for user management
      - ⬜ Auth Service for authentication and session management
@@ -50,7 +50,7 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
      - ⬜ Audit Service for logging and reporting
    - ⬜ Implement business logic validation at the service layer
 
-3. **API Implementation** (High Priority)
+2. **API Implementation** (High Priority)
    - ⬜ Define API endpoints for authentication operations
    - ⬜ Create RESTful API design for authentication services
    - ⬜ Document API contracts and response formats
@@ -59,25 +59,25 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
    - ⬜ Implement JWT validation middleware
    - ⬜ Add permission checking middleware using RBAC
 
-4. **SSO Implementation** (High Priority)
+3. **SSO Implementation** (High Priority)
    - ⬜ Implement SAML 2.0 authentication flow
    - ⬜ Implement OIDC authentication flow
    - ⬜ Design and implement multi-tenant SSO configurations
    - ⬜ Create JWT token handling with proper validation
 
-5. **MFA Implementation** (High Priority)
+4. **MFA Implementation** (High Priority)
    - ⬜ Implement MFA verification logic
    - ⬜ Support for TOTP, SMS, and push notifications
    - ⬜ Create enrollment and verification flows
    - ⬜ Implement backup codes for recovery
 
-6. **Cloud Integration** (High Priority)
+5. **Cloud Integration** (High Priority)
    - ⬜ Implement AWS integration for S3 and Transfer Family
    - ⬜ Add Azure integration for blob storage
    - ⬜ Create GCP integration for cloud storage
    - ⬜ Build unified cloud provider interface
 
-7. **HIPAA Compliance Features** (High Priority)
+6. **HIPAA Compliance Features** (High Priority)
    - ⬜ Implement comprehensive audit logging system
    - ⬜ Add data encryption for all sensitive fields
    - ⬜ Create compliance reporting tools
@@ -87,14 +87,14 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
    - ⬜ Implement account lockout after failed attempts
    - ⬜ Add forced password rotation for non-SSO authentication
 
-8. **Database Environment Completion** (Medium Priority)
+7. **Database Environment Completion** (Medium Priority)
    - ⬜ Set up database initialization scripts
    - ⬜ Implement database backup and recovery procedures
    - ⬜ Configure proper database user permissions for services
    - ⬜ Implement connection pooling with security settings
    - ⬜ Enable SSL/TLS for database connections
 
-9. **Performance Optimization** (Medium Priority)
+8. **Performance Optimization** (Medium Priority)
    - ⬜ Implement caching strategy for frequently accessed data
    - ⬜ Optimize critical queries with execution plan analysis
    - ⬜ Add monitoring for query performance
@@ -167,9 +167,9 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 
 ## Next Immediate Steps
 
-1. Complete the remaining repository implementations
-2. Start building the API endpoints for core functionality 
-3. Implement the cloud integration services within the backend
+1. Create authentication services that utilize repositories (User Service, Auth Service, SSO Service, MFA Service) 
+2. Define and implement API endpoints for core functionality 
+3. Implement the cloud integration services for AWS/Azure/GCP
 4. Begin developing the frontend authentication components
 
 ## Troubleshooting Notes

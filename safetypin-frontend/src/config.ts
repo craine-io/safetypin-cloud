@@ -6,6 +6,10 @@ const isRunningInDocker = process.env.REACT_APP_RUNTIME_ENV === 'docker';
 const config = {
   // API configuration
   api: {
+    // API base URL resolution order:
+    // 1. Environment variable REACT_APP_API_URL if set
+    // 2. Docker config (configured as localhost:3000 for docker-compose compatibility)
+    // 3. Default localhost:3000 for local development
     baseUrl:
       process.env.REACT_APP_API_URL ||
       (isRunningInDocker ? apiConfig.apiUrl : 'http://localhost:3000'),
