@@ -11,12 +11,33 @@ import {
 } from '../../../models/auth/user.model';
 import { query, transaction } from '../../database/config';
 
-export class UserPostgresRepository extends BasePostgresRepository<User, CreateUserDto, UpdateUserDto> implements UserRepository {
+// Define a type for the database row
+interface UserRow {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  job_title: string | null;
+  status: string;
+  creation_time: Date;
+  last_update_time: Date;
+  last_login_time: Date | null;
+  password_hash: string | null;
+  password_last_changed: Date | null;
+  force_password_change: boolean;
+  avatar_url: string | null;
+  phone_number: string | null;
+  timezone: string;
+  locale: string;
+  mfa_enabled: boolean;
+}
+
+export class UserPostgresRepository extends BasePostgresRepository<User, UserRow, CreateUserDto, UpdateUserDto> implements UserRepository {
   constructor() {
     super('users');
   }
   
-  protected mapToEntity(row: any): User {
+  protected mapToEntity(row: UserRow): User {
     return {
       id: row.id,
       email: row.email,
@@ -132,7 +153,7 @@ export class UserPostgresRepository extends BasePostgresRepository<User, CreateU
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as UserRow) : null;
     };
     
     // Override other methods similarly as needed for transactions
@@ -147,7 +168,7 @@ export class UserPostgresRepository extends BasePostgresRepository<User, CreateU
       [email]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as UserRow) : null;
   }
   
   async findByIdWithOrganizations(id: string): Promise<UserWithOrganizations | null> {
@@ -168,7 +189,7 @@ export class UserPostgresRepository extends BasePostgresRepository<User, CreateU
       [id]
     );
     
-    const user = this.mapToEntity(userResult.rows[0]);
+    const user = this.mapToEntity(userResult.rows[0] as UserRow);
     const organizations = orgResult.rows.map(row => ({
       id: row.id,
       name: row.name,
@@ -188,7 +209,7 @@ export class UserPostgresRepository extends BasePostgresRepository<User, CreateU
       [email]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as UserRow) : null;
   }
   
   async validateCredentials(email: string, password: string): Promise<User | null> {
@@ -331,7 +352,7 @@ export class UserPostgresRepository extends BasePostgresRepository<User, CreateU
     
     const result = await query(sql, params);
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as UserRow));
   }
   
   async getRecentlyActiveUsers(days: number, organizationId?: string): Promise<{ id: string; email: string; lastLoginTime: Date; }[]> {
@@ -405,7 +426,7 @@ export class UserPostgresRepository extends BasePostgresRepository<User, CreateU
         ]
       );
       
-      return this.mapToEntity(result.rows[0]);
+      return this.mapToEntity(result.rows[0] as UserRow);
     });
   }
 }

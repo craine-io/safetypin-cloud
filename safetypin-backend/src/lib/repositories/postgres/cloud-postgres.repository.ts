@@ -13,13 +13,43 @@ import {
 import { query, transaction } from '../../database/config';
 import * as crypto from 'crypto';
 
+// Define the row type for cloud provider table
+interface CloudProviderRow {
+  id: string;
+  name: string;
+  display_name: string;
+  status: string;
+  api_version: string;
+  capabilities: string | null;
+}
+
+// Define the row type for cloud credentials table
+interface CloudCredentialRow {
+  id: string;
+  organization_id: string;
+  cloud_provider_id: string;
+  name: string;
+  credential_type: string;
+  credentials: any;
+  creation_time: Date;
+  created_by: string | null;
+  last_update_time: Date;
+  updated_by: string | null;
+  status: string;
+  last_verified_time: Date | null;
+  is_default: boolean;
+}
+
 // Cloud Provider Repository
-export class CloudProviderPostgresRepository extends BasePostgresRepository<CloudProvider, any, any> implements CloudProviderRepository {
+export class CloudProviderPostgresRepository 
+  extends BasePostgresRepository<CloudProvider, CloudProviderRow, any, any> 
+  implements CloudProviderRepository 
+{
   constructor() {
     super('cloud_providers');
   }
   
-  protected mapToEntity(row: any): CloudProvider {
+  protected mapToEntity(row: CloudProviderRow): CloudProvider {
     return {
       id: row.id,
       name: row.name,
@@ -47,7 +77,7 @@ export class CloudProviderPostgresRepository extends BasePostgresRepository<Clou
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as CloudProviderRow) : null;
     };
     
     return transactionRepo;
@@ -60,7 +90,7 @@ export class CloudProviderPostgresRepository extends BasePostgresRepository<Clou
       [name]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as CloudProviderRow) : null;
   }
   
   async findByCapability(capability: string): Promise<CloudProvider[]> {
@@ -71,7 +101,7 @@ export class CloudProviderPostgresRepository extends BasePostgresRepository<Clou
       []
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as CloudProviderRow));
   }
   
   async getActiveProviders(): Promise<CloudProvider[]> {
@@ -82,12 +112,15 @@ export class CloudProviderPostgresRepository extends BasePostgresRepository<Clou
       []
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as CloudProviderRow));
   }
 }
 
 // Cloud Credential Repository
-export class CloudCredentialPostgresRepository extends BasePostgresRepository<OrganizationCloudCredential, CreateCloudCredentialDto, UpdateCloudCredentialDto> implements CloudCredentialRepository {
+export class CloudCredentialPostgresRepository 
+  extends BasePostgresRepository<OrganizationCloudCredential, CloudCredentialRow, CreateCloudCredentialDto, UpdateCloudCredentialDto> 
+  implements CloudCredentialRepository 
+{
   private readonly encryptionKey: string;
   private readonly algorithm = 'aes-256-gcm';
   
@@ -99,7 +132,7 @@ export class CloudCredentialPostgresRepository extends BasePostgresRepository<Or
     this.encryptionKey = process.env.CREDENTIAL_ENCRYPTION_KEY || 'a-secure-encryption-key-should-be-used-in-production';
   }
   
-  protected mapToEntity(row: any): OrganizationCloudCredential {
+  protected mapToEntity(row: CloudCredentialRow): OrganizationCloudCredential {
     return {
       id: row.id,
       organizationId: row.organization_id,
@@ -190,7 +223,7 @@ export class CloudCredentialPostgresRepository extends BasePostgresRepository<Or
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as CloudCredentialRow) : null;
     };
     
     return transactionRepo;
@@ -277,7 +310,7 @@ export class CloudCredentialPostgresRepository extends BasePostgresRepository<Or
       [organizationId]
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as CloudCredentialRow));
   }
   
   async findDefaultForProvider(organizationId: string, providerId: string): Promise<OrganizationCloudCredential | null> {
@@ -291,7 +324,7 @@ export class CloudCredentialPostgresRepository extends BasePostgresRepository<Or
       [organizationId, providerId]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as CloudCredentialRow) : null;
   }
   
   async setAsDefault(id: string): Promise<OrganizationCloudCredential | null> {
@@ -328,7 +361,7 @@ export class CloudCredentialPostgresRepository extends BasePostgresRepository<Or
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as CloudCredentialRow) : null;
     });
   }
   

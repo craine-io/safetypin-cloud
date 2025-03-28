@@ -17,12 +17,47 @@ import {
 } from '../../../models/auth/permission.model';
 import { query, transaction } from '../../database/config';
 
-export class PermissionPostgresRepository extends BasePostgresRepository<Permission, CreatePermissionDto, UpdatePermissionDto> implements PermissionRepository {
+// Define the row type for permission table
+interface PermissionRow {
+  id: string;
+  name: string;
+  description: string | null;
+  resource_type: string;
+  action: string;
+  is_system_permission: boolean;
+}
+
+// Define the row type for role table
+interface RoleRow {
+  id: string;
+  organization_id: string | null;
+  name: string;
+  description: string | null;
+  is_system_role: boolean;
+  creation_time: Date;
+  created_by: string | null;
+  last_update_time: Date;
+  updated_by: string | null;
+}
+
+// Define the row type for user_roles table
+interface UserRoleRow {
+  user_id: string;
+  role_id: string;
+  organization_id: string | null;
+  granted_by: string | null;
+  granted_time: Date;
+}
+
+export class PermissionPostgresRepository 
+  extends BasePostgresRepository<Permission, PermissionRow, CreatePermissionDto, UpdatePermissionDto> 
+  implements PermissionRepository 
+{
   constructor() {
     super('permissions');
   }
   
-  protected mapToEntity(row: any): Permission {
+  protected mapToEntity(row: PermissionRow): Permission {
     return {
       id: row.id,
       name: row.name,
@@ -81,7 +116,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as PermissionRow) : null;
     };
     
     // Override other methods similarly as needed for transactions
@@ -90,7 +125,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
   }
   
   // Helper methods to map database rows to entities
-  private mapToRole(row: any): Role {
+  private mapToRole(row: RoleRow): Role {
     return {
       id: row.id,
       organizationId: row.organization_id,
@@ -104,7 +139,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
     };
   }
   
-  private mapToUserRole(row: any): UserRole {
+  private mapToUserRole(row: UserRoleRow): UserRole {
     return {
       userId: row.user_id,
       roleId: row.role_id,
@@ -122,7 +157,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [resourceType, action]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as PermissionRow) : null;
   }
   
   async findByName(name: string): Promise<Permission | null> {
@@ -131,7 +166,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [name]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as PermissionRow) : null;
   }
   
   async findByNames(names: string[]): Promise<Permission[]> {
@@ -140,7 +175,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [names]
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as PermissionRow));
   }
   
   // Role operations
@@ -178,7 +213,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
         );
       }
       
-      return this.mapToRole(result.rows[0]);
+      return this.mapToRole(result.rows[0] as RoleRow);
     });
   }
   
@@ -188,7 +223,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [id]
     );
     
-    return result.rows.length > 0 ? this.mapToRole(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToRole(result.rows[0] as RoleRow) : null;
   }
   
   async findRoleWithPermissions(id: string): Promise<RoleWithPermissions | null> {
@@ -209,8 +244,8 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [id]
     );
     
-    const role = this.mapToRole(roleResult.rows[0]);
-    const permissions = permissionsResult.rows.map(row => this.mapToEntity(row));
+    const role = this.mapToRole(roleResult.rows[0] as RoleRow);
+    const permissions = permissionsResult.rows.map(row => this.mapToEntity(row as PermissionRow));
     
     return {
       ...role,
@@ -229,7 +264,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
     
     const result = await query(sql, params);
     
-    return result.rows.length > 0 ? this.mapToRole(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToRole(result.rows[0] as RoleRow) : null;
   }
   
   async updateRole(id: string, dto: UpdateRoleDto): Promise<Role | null> {
@@ -265,7 +300,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       params
     );
     
-    return result.rows.length > 0 ? this.mapToRole(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToRole(result.rows[0] as RoleRow) : null;
   }
   
   async deleteRole(id: string): Promise<boolean> {
@@ -299,7 +334,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       []
     );
     
-    return result.rows.map(row => this.mapToRole(row));
+    return result.rows.map(row => this.mapToRole(row as RoleRow));
   }
   
   // Organization roles
@@ -311,7 +346,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [organizationId]
     );
     
-    return result.rows.map(row => this.mapToRole(row));
+    return result.rows.map(row => this.mapToRole(row as RoleRow));
   }
   
   // Role permissions
@@ -375,7 +410,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [roleId]
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as PermissionRow));
   }
   
   // User roles
@@ -389,7 +424,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
       [dto.userId, dto.roleId, dto.organizationId || null, dto.grantedBy || null]
     );
     
-    return this.mapToUserRole(result.rows[0]);
+    return this.mapToUserRole(result.rows[0] as UserRoleRow);
   }
   
   async removeRoleFromUser(userId: string, roleId: string, organizationId?: string): Promise<boolean> {
@@ -424,7 +459,7 @@ export class PermissionPostgresRepository extends BasePostgresRepository<Permiss
     
     const result = await query(sql, params);
     
-    return result.rows.map(row => this.mapToRole(row));
+    return result.rows.map(row => this.mapToRole(row as RoleRow));
   }
   
   // Permission checking

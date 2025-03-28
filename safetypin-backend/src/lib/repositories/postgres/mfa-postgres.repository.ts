@@ -14,12 +14,30 @@ import {
 } from '../../../models/auth/mfa.model';
 import { query, transaction } from '../../database/config';
 
-export class MfaPostgresRepository extends BasePostgresRepository<MfaMethod, CreateMfaMethodDto, UpdateMfaMethodDto> implements MfaRepository {
+// Define the row type for MFA methods table
+interface MfaMethodRow {
+  id: string;
+  user_id: string;
+  type: string;
+  status: string;
+  creation_time: Date;
+  last_update_time: Date;
+  last_used_time: Date | null;
+  secret: string | null;
+  phone_number: string | null;
+  device_token: string | null;
+  backup_codes: string | null;
+}
+
+export class MfaPostgresRepository 
+  extends BasePostgresRepository<MfaMethod, MfaMethodRow, CreateMfaMethodDto, UpdateMfaMethodDto> 
+  implements MfaRepository 
+{
   constructor() {
     super('mfa_methods');
   }
   
-  protected mapToEntity(row: any): MfaMethod {
+  protected mapToEntity(row: MfaMethodRow): MfaMethod {
     return {
       id: row.id,
       userId: row.user_id,
@@ -116,7 +134,7 @@ export class MfaPostgresRepository extends BasePostgresRepository<MfaMethod, Cre
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as MfaMethodRow) : null;
     };
     
     // Override other methods similarly as needed for transactions
@@ -131,7 +149,7 @@ export class MfaPostgresRepository extends BasePostgresRepository<MfaMethod, Cre
       [userId]
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as MfaMethodRow));
   }
   
   async findByUserIdAndType(userId: string, type: MfaMethodType): Promise<MfaMethod | null> {
@@ -143,7 +161,7 @@ export class MfaPostgresRepository extends BasePostgresRepository<MfaMethod, Cre
       [userId, type]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as MfaMethodRow) : null;
   }
   
   async activateMethod(id: string): Promise<MfaMethod | null> {
@@ -156,7 +174,7 @@ export class MfaPostgresRepository extends BasePostgresRepository<MfaMethod, Cre
       [id, MfaMethodStatus.ACTIVE]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as MfaMethodRow) : null;
   }
   
   async deactivateMethod(id: string): Promise<MfaMethod | null> {
@@ -169,7 +187,7 @@ export class MfaPostgresRepository extends BasePostgresRepository<MfaMethod, Cre
       [id, MfaMethodStatus.INACTIVE]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as MfaMethodRow) : null;
   }
   
   async updateLastUsed(id: string): Promise<boolean> {

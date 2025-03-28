@@ -16,12 +16,32 @@ import {
 } from '../../../models/auth/session.model';
 import { query, transaction } from '../../database/config';
 
-export class SessionPostgresRepository extends BasePostgresRepository<Session, CreateSessionDto, UpdateSessionDto> implements SessionRepository {
+// Define the row type for session table
+interface SessionRow {
+  id: string;
+  user_id: string;
+  creation_time: Date;
+  expiration_time: Date;
+  last_activity_time: Date;
+  ip_address: string | null;
+  user_agent: string | null;
+  device_id: string | null;
+  refresh_token_id: string | null;
+  is_mfa_complete: boolean;
+  revoked: boolean;
+  revocation_reason: string | null;
+  session_data: string | null;
+}
+
+export class SessionPostgresRepository 
+  extends BasePostgresRepository<Session, SessionRow, CreateSessionDto, UpdateSessionDto> 
+  implements SessionRepository 
+{
   constructor() {
     super('sessions');
   }
   
-  protected mapToEntity(row: any): Session {
+  protected mapToEntity(row: SessionRow): Session {
     return {
       id: row.id,
       userId: row.user_id,
@@ -116,7 +136,7 @@ export class SessionPostgresRepository extends BasePostgresRepository<Session, C
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as SessionRow) : null;
     };
     
     // Override other methods similarly as needed for transactions
@@ -135,7 +155,7 @@ export class SessionPostgresRepository extends BasePostgresRepository<Session, C
       [userId]
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as SessionRow));
   }
   
   async findByDeviceId(deviceId: string): Promise<Session | null> {
@@ -149,7 +169,7 @@ export class SessionPostgresRepository extends BasePostgresRepository<Session, C
       [deviceId]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as SessionRow) : null;
   }
   
   async updateActivity(id: string): Promise<boolean> {
@@ -173,7 +193,7 @@ export class SessionPostgresRepository extends BasePostgresRepository<Session, C
       [id, expirationTime]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as SessionRow) : null;
   }
   
   async markMfaComplete(id: string): Promise<Session | null> {
@@ -186,7 +206,7 @@ export class SessionPostgresRepository extends BasePostgresRepository<Session, C
       [id]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as SessionRow) : null;
   }
   
   async revoke(id: string, reason?: string): Promise<boolean> {

@@ -9,15 +9,34 @@ import {
 } from '../../../models/servers/transfers.model';
 import { query, transaction } from '../../database/config';
 
+// Define the row type for transfer table
+interface TransferRow {
+  id: string;
+  server_id: string;
+  organization_id: string;
+  filename: string;
+  path: string;
+  direction: string;
+  timestamp: Date;
+  size: string;
+  status: string;
+  user_id: string;
+  client_ip: string;
+  transfer_time: number | null;
+  checksum_before: string | null;
+  checksum_after: string | null;
+  error_details: string | null;
+}
+
 export class TransferPostgresRepository
-  extends BasePostgresRepository<Transfer, CreateTransferDto, UpdateTransferDto>
+  extends BasePostgresRepository<Transfer, TransferRow, CreateTransferDto, UpdateTransferDto>
   implements TransferRepository
 {
   constructor() {
     super('transfers');
   }
 
-  protected mapToEntity(row: any): Transfer {
+  protected mapToEntity(row: TransferRow): Transfer {
     return {
       id: row.id,
       serverId: row.server_id,
@@ -106,7 +125,7 @@ export class TransferPostgresRepository
       [serverId]
     );
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as TransferRow));
   }
 
   async findByOrganization(organizationId: string): Promise<Transfer[]> {
@@ -115,7 +134,7 @@ export class TransferPostgresRepository
       [organizationId]
     );
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as TransferRow));
   }
 
   async findByUser(userId: string): Promise<Transfer[]> {
@@ -124,7 +143,7 @@ export class TransferPostgresRepository
       [userId]
     );
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as TransferRow));
   }
 
   async findByPath(path: string, serverId?: string): Promise<Transfer[]> {
@@ -139,7 +158,7 @@ export class TransferPostgresRepository
     sql += ` ORDER BY timestamp DESC`;
 
     const result = await query(sql, params);
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as TransferRow));
   }
 
   async getTransferStats(serverId?: string, organizationId?: string): Promise<TransferStats> {
@@ -263,7 +282,7 @@ export class TransferPostgresRepository
     params.push(id);
 
     const result = await query(sql, params);
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as TransferRow) : null;
   }
 
   async findRecentTransfers(limit: number = 10, serverId?: string, organizationId?: string): Promise<Transfer[]> {
@@ -286,7 +305,7 @@ export class TransferPostgresRepository
       LIMIT $${params.length}
     `, params);
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as TransferRow));
   }
 
   async getTransferCountByDirection(

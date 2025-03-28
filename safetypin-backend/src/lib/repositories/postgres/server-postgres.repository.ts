@@ -9,15 +9,39 @@ import {
 } from '../../../models/servers/server.model';
 import { query, transaction } from '../../database/config';
 
+// Define the row type for server table
+interface ServerRow {
+  id: string;
+  organization_id: string;
+  name: string;
+  host: string;
+  status: string;
+  type: string;
+  storage_used: string;
+  storage_limit: string;
+  last_connection: Date | null;
+  region: string;
+  username: string;
+  creation_time: Date;
+  last_update_time: Date;
+  expiry_time: Date | null;
+  lifecycle_status: string | null;
+  security_settings: any;
+  lifecycle_settings: any;
+  cloud_provider_id: string | null;
+  cloud_credential_id: string | null;
+  cloud_resource_id: string | null;
+}
+
 export class ServerPostgresRepository 
-  extends BasePostgresRepository<Server, CreateServerDto, UpdateServerDto>
+  extends BasePostgresRepository<Server, ServerRow, CreateServerDto, UpdateServerDto>
   implements ServerRepository 
 {
   constructor() {
     super('servers');
   }
 
-  protected mapToEntity(row: any): Server {
+  protected mapToEntity(row: ServerRow): Server {
     return {
       id: row.id,
       organizationId: row.organization_id,
@@ -129,7 +153,7 @@ export class ServerPostgresRepository
       [organizationId]
     );
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as ServerRow));
   }
 
   async findWithCredentials(id: string): Promise<ServerProvisionResult | null> {
@@ -178,7 +202,7 @@ export class ServerPostgresRepository
       [status, id]
     );
 
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as ServerRow) : null;
   }
 
   async updateStorageUsed(id: string, storageUsed: number): Promise<Server | null> {
@@ -190,7 +214,7 @@ export class ServerPostgresRepository
       [storageUsed, id]
     );
 
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as ServerRow) : null;
   }
 
   async setExpiryTime(id: string, expiryTime: Date | null): Promise<Server | null> {
@@ -202,7 +226,7 @@ export class ServerPostgresRepository
       [expiryTime, id]
     );
 
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as ServerRow) : null;
   }
 
   async findExpired(): Promise<Server[]> {
@@ -213,7 +237,7 @@ export class ServerPostgresRepository
        AND status != 'Offline'`
     );
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as ServerRow));
   }
 
   async getServersByStatus(status: 'Online' | 'Offline' | 'Maintenance' | 'Provisioning'): Promise<Server[]> {
@@ -222,7 +246,7 @@ export class ServerPostgresRepository
       [status]
     );
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as ServerRow));
   }
 
   async storeCredentials(serverId: string, publicKey: string, privateKey: string): Promise<boolean> {
@@ -263,7 +287,7 @@ export class ServerPostgresRepository
       [region]
     );
 
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as ServerRow));
   }
 
   // Helper to generate random string for hostnames

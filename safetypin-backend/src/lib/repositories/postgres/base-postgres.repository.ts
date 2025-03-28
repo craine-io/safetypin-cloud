@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { BaseRepository, QueryOptions } from '../base.repository';
 import { query, transaction } from '../../database/config';
 
-export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements BaseRepository<T, CreateDto, UpdateDto> {
+export abstract class BasePostgresRepository<T, RowType, CreateDto, UpdateDto> implements BaseRepository<T, CreateDto, UpdateDto> {
   protected tableName: string;
   protected idField: string = 'id';
   
@@ -11,7 +11,7 @@ export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements
     this.tableName = tableName;
   }
   
-  protected abstract mapToEntity(row: any): T;
+  protected abstract mapToEntity(row: RowType): T;
   protected abstract mapToCreateQuery(dto: CreateDto): { query: string; params: any[] };
   protected abstract mapToUpdateQuery(dto: UpdateDto): { setClause: string; params: any[] };
   
@@ -22,7 +22,7 @@ export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements
       [id]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as RowType) : null;
   }
   
   async findAll(filter: any = {}, options: QueryOptions = {}): Promise<T[]> {
@@ -42,7 +42,7 @@ export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements
       params
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map((row: RowType) => this.mapToEntity(row));
   }
   
   async findOne(filter: any): Promise<T | null> {
@@ -55,7 +55,7 @@ export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements
       params
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as RowType) : null;
   }
   
   async count(filter: any = {}): Promise<number> {
@@ -76,7 +76,7 @@ export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements
     
     const result = await query(createQuery, params);
     
-    return this.mapToEntity(result.rows[0]);
+    return this.mapToEntity(result.rows[0] as RowType);
   }
   
   async createMany(dtos: CreateDto[]): Promise<T[]> {
@@ -86,7 +86,7 @@ export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements
       for (const dto of dtos) {
         const { query: createQuery, params } = this.mapToCreateQuery(dto);
         const result = await client.query(createQuery, params);
-        results.push(this.mapToEntity(result.rows[0]));
+        results.push(this.mapToEntity(result.rows[0] as RowType));
       }
       
       return results;
@@ -110,7 +110,7 @@ export abstract class BasePostgresRepository<T, CreateDto, UpdateDto> implements
       [...params, id]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as RowType) : null;
   }
   
   async updateMany(filter: any, dto: Partial<UpdateDto>): Promise<number> {

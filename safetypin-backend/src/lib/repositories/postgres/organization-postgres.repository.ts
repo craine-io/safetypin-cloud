@@ -12,12 +12,30 @@ import {
 } from '../../../models/auth/organization.model';
 import { query, transaction } from '../../database/config';
 
-export class OrganizationPostgresRepository extends BasePostgresRepository<Organization, CreateOrganizationDto, UpdateOrganizationDto> implements OrganizationRepository {
+// Define the row type for organization table
+interface OrganizationRow {
+  id: string;
+  name: string;
+  domain: string | null;
+  status: string;
+  creation_time: Date;
+  subscription_tier: string;
+  max_users: number;
+  billing_email: string | null;
+  technical_contact_email: string | null;
+  settings: string | null;
+  last_update_time?: Date;
+}
+
+export class OrganizationPostgresRepository 
+  extends BasePostgresRepository<Organization, OrganizationRow, CreateOrganizationDto, UpdateOrganizationDto> 
+  implements OrganizationRepository 
+{
   constructor() {
     super('organizations');
   }
   
-  protected mapToEntity(row: any): Organization {
+  protected mapToEntity(row: OrganizationRow): Organization {
     return {
       id: row.id,
       name: row.name,
@@ -119,7 +137,7 @@ export class OrganizationPostgresRepository extends BasePostgresRepository<Organ
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as OrganizationRow) : null;
     };
     
     // Override other methods similarly as needed for transactions
@@ -134,7 +152,7 @@ export class OrganizationPostgresRepository extends BasePostgresRepository<Organ
       [domain]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as OrganizationRow) : null;
   }
   
   async findByIdWithUsers(id: string): Promise<OrganizationWithUsers | null> {
@@ -155,7 +173,7 @@ export class OrganizationPostgresRepository extends BasePostgresRepository<Organ
       [id]
     );
     
-    const organization = this.mapToEntity(orgResult.rows[0]);
+    const organization = this.mapToEntity(orgResult.rows[0] as OrganizationRow);
     const users = usersResult.rows.map(row => ({
       id: row.id,
       email: row.email,
@@ -244,7 +262,7 @@ export class OrganizationPostgresRepository extends BasePostgresRepository<Organ
       [userId]
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as OrganizationRow));
   }
   
   async isUserInOrganization(userId: string, organizationId: string): Promise<boolean> {
@@ -320,7 +338,7 @@ export class OrganizationPostgresRepository extends BasePostgresRepository<Organ
       [id, tier, maxUsers]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as OrganizationRow) : null;
   }
   
   async getUserCount(organizationId: string): Promise<number> {

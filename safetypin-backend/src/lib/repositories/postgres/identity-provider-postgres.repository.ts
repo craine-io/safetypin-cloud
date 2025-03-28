@@ -12,12 +12,35 @@ import {
 } from '../../../models/auth/identity-provider.model';
 import { query, transaction } from '../../database/config';
 
-export class IdentityProviderPostgresRepository extends BasePostgresRepository<IdentityProvider, CreateIdentityProviderDto, UpdateIdentityProviderDto> implements IdentityProviderRepository {
+// Define the row type for identity provider table
+interface IdentityProviderRow {
+  id: string;
+  organization_id: string;
+  name: string;
+  type: string;
+  issuer_url: string | null;
+  entity_id: string | null;
+  metadata_url: string | null;
+  client_id: string | null;
+  client_secret: string | null;
+  discovery_url: string | null;
+  certificate: string | null;
+  status: string;
+  creation_time: Date;
+  last_update_time: Date;
+  is_default: boolean;
+  configuration: string | null;
+}
+
+export class IdentityProviderPostgresRepository 
+  extends BasePostgresRepository<IdentityProvider, IdentityProviderRow, CreateIdentityProviderDto, UpdateIdentityProviderDto> 
+  implements IdentityProviderRepository 
+{
   constructor() {
     super('identity_providers');
   }
   
-  protected mapToEntity(row: any): IdentityProvider {
+  protected mapToEntity(row: IdentityProviderRow): IdentityProvider {
     return {
       id: row.id,
       organizationId: row.organization_id,
@@ -145,7 +168,7 @@ export class IdentityProviderPostgresRepository extends BasePostgresRepository<I
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as IdentityProviderRow) : null;
     };
     
     // Override other methods similarly as needed for transactions
@@ -160,7 +183,7 @@ export class IdentityProviderPostgresRepository extends BasePostgresRepository<I
       [organizationId]
     );
     
-    return result.rows.map(row => this.mapToEntity(row));
+    return result.rows.map(row => this.mapToEntity(row as IdentityProviderRow));
   }
   
   async findDefaultForOrganization(organizationId: string): Promise<IdentityProvider | null> {
@@ -170,7 +193,7 @@ export class IdentityProviderPostgresRepository extends BasePostgresRepository<I
       [organizationId]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as IdentityProviderRow) : null;
   }
   
   async setAsDefault(id: string): Promise<IdentityProvider | null> {
@@ -204,7 +227,7 @@ export class IdentityProviderPostgresRepository extends BasePostgresRepository<I
         [id]
       );
       
-      return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+      return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as IdentityProviderRow) : null;
     });
   }
   
@@ -447,7 +470,7 @@ export class IdentityProviderPostgresRepository extends BasePostgresRepository<I
       [entityId]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as IdentityProviderRow) : null;
   }
   
   async findByIssuerUrl(issuerUrl: string): Promise<IdentityProvider | null> {
@@ -457,6 +480,6 @@ export class IdentityProviderPostgresRepository extends BasePostgresRepository<I
       [issuerUrl]
     );
     
-    return result.rows.length > 0 ? this.mapToEntity(result.rows[0]) : null;
+    return result.rows.length > 0 ? this.mapToEntity(result.rows[0] as IdentityProviderRow) : null;
   }
 }
