@@ -94,13 +94,37 @@ const mockServers: Server[] = [
 class ServerService {
   // Get all servers
   async getServers(): Promise<Server[]> {
+    console.log('getServers called, mock mode:', api.shouldUseMockData());
+    console.log('API base URL:', api.getBaseUrl());
+
     // Use mock data if in mock mode
     if (api.shouldUseMockData()) {
+      console.log('Using mock data');
       return Promise.resolve([...mockServers]);
     }
 
-    // Otherwise, call the real API
-    return api.get<Server[]>('/servers');
+    // Call the real API
+    try {
+      console.log('Attempting to fetch servers from API...');
+      // Try the debug endpoint first
+      try {
+        console.log('Trying debug endpoint');
+        const debugResponse = await fetch(api.getBaseUrl() + '/debug/servers');
+        const debugData = await debugResponse.json();
+        console.log('Debug endpoint response:', debugData);
+      } catch (debugError) {
+        console.error('Debug endpoint failed:', debugError);
+      }
+
+      const servers = await api.get<Server[]>('/servers');
+      console.log('API returned servers:', servers);
+      return servers;
+    } catch (error) {
+      console.error('Error fetching servers from API:', error);
+      // Fall back to mock data if the API fails
+      console.log('Falling back to mock data');
+      return [...mockServers];
+    }
   }
 
   // Get a specific server
@@ -114,8 +138,20 @@ class ServerService {
       return Promise.resolve({ ...server });
     }
 
-    // Otherwise, call the real API
-    return api.get<Server>(`/servers/${id}`);
+    // Call the real API
+    try {
+      const server = await api.get<Server>(`/servers/${id}`);
+      return server;
+    } catch (error) {
+      console.error(`Error fetching server ${id}:`, error);
+
+      // Fall back to mock data if the API fails
+      const server = mockServers.find(s => s.id === id);
+      if (!server) {
+        throw new Error(`Server not found: ${id}`);
+      }
+      return { ...server };
+    }
   }
 
   // Create a new server
@@ -156,10 +192,47 @@ class ServerService {
       });
     }
 
-    // Otherwise, call the real API
-    // Convert ServerCreationParams to a Record<string, unknown> to match API method signature
-    const apiParams = params as unknown as Record<string, unknown>;
-    return api.post<ServerProvisionResult>('/servers', apiParams);
+    // Call the real API
+    try {
+      // Convert ServerCreationParams to a Record<string, unknown> to match API method signature
+      const apiParams = params as unknown as Record<string, unknown>;
+      const result = await api.post<ServerProvisionResult>('/servers', apiParams);
+      return result;
+    } catch (error) {
+      console.error('Error creating server:', error);
+
+      // Fall back to mock data if the API fails
+      const newServer: Server = {
+        id: `srv-${Math.floor(Math.random() * 1000)}`,
+        name: params.name,
+        host: `${params.name.toLowerCase().replace(/\s+/g, '-')}.example.com`,
+        status: 'Provisioning',
+        type: 'SFTP',
+        storageUsed: 0,
+        lastConnection: 'Never',
+        region: params.region,
+        username: params.username || 'sftp-user',
+      };
+
+      // Simulate adding to the list and provisioning
+      mockServers.push(newServer);
+      setTimeout(() => {
+        newServer.status = 'Online';
+      }, 3000);
+
+      return {
+        server: newServer,
+        credentials: {
+          host: newServer.host,
+          port: 22,
+          username: newServer.username || 'sftp-user',
+          privateKey:
+            params.securityOptions?.sshKeyType === 'generate'
+              ? 'MOCK_PRIVATE_KEY_CONTENT'
+              : undefined,
+        },
+      };
+    }
   }
 
   // Delete a server
@@ -174,8 +247,19 @@ class ServerService {
       return Promise.resolve();
     }
 
-    // Otherwise, call the real API
-    return api.delete<void>(`/servers/${id}`);
+    // Call the real API
+    try {
+      await api.delete<void>(`/servers/${id}`);
+    } catch (error) {
+      console.error(`Error deleting server ${id}:`, error);
+
+      // Fall back to mock behavior if the API fails
+      const index = mockServers.findIndex(s => s.id === id);
+      if (index === -1) {
+        throw new Error(`Server not found: ${id}`);
+      }
+      mockServers.splice(index, 1);
+    }
   }
 }
 

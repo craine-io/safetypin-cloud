@@ -49,15 +49,20 @@ class ApiService {
    * Check if we should use mock data
    */
   shouldUseMockData(): boolean {
-    // Only use mock data if explicitly set via environment variable
-    return process.env.REACT_APP_USE_MOCK_DATA === 'true';
+    console.log('Checking if we should use mock data...');
+    console.log('REACT_APP_USE_MOCK_DATA:', process.env.REACT_APP_USE_MOCK_DATA);
+
+    // Always use real API data for development troubleshooting
+    return false;
   }
 
   /**
-   * Get the base URL of the API
+   * Get base URL
    */
   getBaseUrl(): string {
-    return config.api.baseUrl;
+    const url = config.api.baseUrl;
+    console.log('API Base URL:', url);
+    return url;
   }
 
   /**
@@ -66,6 +71,7 @@ class ApiService {
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try {
       const response = await this.client.get<T>(url, config);
+      console.log(`GET ${url} success:`, response.data);
       return response.data;
     } catch (error) {
       console.error(`GET ${url} error:`, error);

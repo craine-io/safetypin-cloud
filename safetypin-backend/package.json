@@ -11,6 +11,8 @@
     "dev": "ts-node-dev --respawn src/index.ts",
     "migrate:up": "ts-node src/lib/database/migrator.ts up",
     "migrate:down": "ts-node src/lib/database/migrator.ts down",
+    "migrate:debug": "ts-node src/lib/database/debug-migrator.ts",
+    "test:db": "ts-node src/test-db.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "fix:unused-vars": "node fix-unused-vars.js",

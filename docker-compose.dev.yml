@@ -65,7 +65,7 @@ services:
       - frontend-node-modules:/app/node_modules
     command: npm start
     environment:
-      - REACT_APP_API_URL=http://backend:3000 # Docker internal service name
+      - REACT_APP_API_URL=http://localhost:3000 # Use localhost for external access
       - REACT_APP_USE_MOCK_DATA=false # Ensure we're not using mock data
       - REACT_APP_RUNTIME_ENV=docker # Flag to indicate we're running in Docker
       - WDS_SOCKET_PORT=3001  # For hot reloading to work properly

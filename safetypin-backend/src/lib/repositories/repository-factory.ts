@@ -7,7 +7,9 @@ import {
   AuditRepository,
   PermissionRepository,
   CloudProviderRepository,
-  CloudCredentialRepository
+  CloudCredentialRepository,
+  ServerRepository,
+  TransferRepository
 } from './index';
 
 import {
@@ -19,7 +21,9 @@ import {
   AuditPostgresRepository,
   PermissionPostgresRepository,
   CloudProviderPostgresRepository,
-  CloudCredentialPostgresRepository
+  CloudCredentialPostgresRepository,
+  ServerPostgresRepository,
+  TransferPostgresRepository
 } from './postgres';
 
 export class RepositoryFactory {
@@ -32,6 +36,8 @@ export class RepositoryFactory {
   private static permissionRepository: PermissionRepository;
   private static cloudProviderRepository: CloudProviderRepository;
   private static cloudCredentialRepository: CloudCredentialRepository;
+  private static serverRepository: ServerRepository;
+  private static transferRepository: TransferRepository;
   
   // UserRepository
   static getUserRepository(): UserRepository {
@@ -103,5 +109,21 @@ export class RepositoryFactory {
       this.cloudCredentialRepository = new CloudCredentialPostgresRepository();
     }
     return this.cloudCredentialRepository;
+  }
+
+  // ServerRepository
+  static getServerRepository(): ServerRepository {
+    if (!this.serverRepository) {
+      this.serverRepository = new ServerPostgresRepository();
+    }
+    return this.serverRepository;
+  }
+
+  // TransferRepository
+  static getTransferRepository(): TransferRepository {
+    if (!this.transferRepository) {
+      this.transferRepository = new TransferPostgresRepository();
+    }
+    return this.transferRepository;
   }
 }

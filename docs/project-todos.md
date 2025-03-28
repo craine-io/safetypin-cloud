@@ -44,12 +44,17 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
    - ✅ Fixed TypeScript errors and type definitions
    - ✅ Fixed error handling in APITest component for unknown types
    - ✅ Fixed type issues in servers.ts with API parameters
+   - ✅ Implemented server and transfer database schema
+   - ✅ Created controllers and endpoints for server and transfer management
+   - ✅ Added seed data migration for testing
 
 4. **Frontend-Backend Integration**
    - ✅ Set up API service for communicating with backend
    - ✅ Added API testing component
    - ✅ Fixed environment configurations for development and production
    - ✅ Fixed linting issues in BillingOSS.tsx component
+   - ✅ Updated frontend services to use real backend API endpoints
+   - ✅ Added fallback to mock data when API is unavailable
 
 5. **Repository Implementations** (High Priority)
    - ✅ Implement remaining PostgreSQL repositories:
@@ -74,13 +79,17 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
      - ⬜ SSO Service for identity provider integration
      - ⬜ MFA Service for multi-factor authentication workflow
      - ⬜ Audit Service for logging and reporting
+   - ⬜ Create server and transfer services:
+     - ⬜ Server Service for SFTP server management
+     - ⬜ Transfer Service for file transfer tracking
+     - ⬜ Storage Service for managing S3 buckets and other storage providers
    - ⬜ Implement business logic validation at the service layer
 
 2. **API Implementation** (High Priority)
    - ⬜ Define API endpoints for authentication operations
-   - ⬜ Create RESTful API design for authentication services
+   - ✅ Create RESTful API design for server and transfer management
    - ⬜ Document API contracts and response formats
-   - ⬜ Implement data validation for authentication inputs
+   - ✅ Implement data validation for server and transfer inputs
    - ⬜ Create authentication middleware for API security
    - ⬜ Implement JWT validation middleware
    - ⬜ Add permission checking middleware using RBAC
@@ -277,9 +286,10 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 1. Fix TypeScript typing issues in repositories to make tests pass
 2. Complete test coverage for all repositories using the TDD approach
 3. Create authentication services that utilize repositories (User Service, Auth Service, SSO Service, MFA Service) 
-4. Define and implement API endpoints for core functionality 
-5. Implement initial cloud integration service for AWS
-6. Run final tests and create the v0.1.0-alpha.1 release using the release automation script
+4. ✅ Define and implement API endpoints for core functionality (servers and transfers)
+5. Implement server and transfer service layer
+6. Implement initial cloud integration service for AWS
+7. Run final tests and create the v0.1.0-alpha.1 release using the release automation script
 
 **Future milestones (v0.1.0-alpha.2 and beyond):**
 

@@ -8,4 +8,6 @@ export * from './mfa-postgres.repository';
 export * from './audit-postgres.repository';
 export * from './permission-postgres.repository';
 export * from './cloud-postgres.repository';
+export * from './server-postgres.repository';
+export * from './transfer-postgres.repository';
 // All PostgreSQL repository implementations are now complete
