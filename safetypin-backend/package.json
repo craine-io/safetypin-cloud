@@ -1,6 +1,6 @@
 {
   "name": "safetypin-backend",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1-dev",
   "author": "Craine Technology Labs",
   "description": "Backend services for SafetyPin OSS",
   "main": "src/index.ts",

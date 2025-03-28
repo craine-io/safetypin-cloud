@@ -1,10 +1,12 @@
 # SafetyPin Cloud
 
+![Version](https://img.shields.io/badge/version-0.1.0--alpha.1--dev-blue) [Version Info](./docs/version.md)
+
 SafetyPin is a secure file transfer solution that enables users to create ephemeral SFTP connections that route directly to cloud storage services (AWS S3, Azure Blob Storage, or Google Cloud Storage). The application provides a user-friendly web interface for managing these connections without requiring clients to have cloud provider knowledge or maintain their own servers.
 
 ## Project Status
 
-SafetyPin is currently in active development. The OSS Edition is being developed with core functionality implemented first, followed by commercial features. The following components are in development:
+SafetyPin is currently in active development working toward the v0.1.0-alpha.1 release. The OSS Edition is being developed with core functionality implemented first, followed by commercial features. The following components are in development:
 
 - ✅ **Database Layer**: PostgreSQL schema design, migration system, and repository implementations complete
 - ✅ **Development Environment**: Docker containerization for easy local development
@@ -16,6 +18,20 @@ SafetyPin is currently in active development. The OSS Edition is being developed
 - 🚧 **Frontend UI Components**: In-progress development of authentication and server management UI
 
 See the [Project Todos](./docs/project-todos.md) file for a detailed breakdown of completed and pending tasks.
+
+### Release Schedule
+
+We follow a structured release plan to ensure consistent progress and quality:
+
+| Version | Focus | Timeline |
+|---------|-------|----------|
+| v0.1.0-alpha.1 | Core database, repositories, and API foundation | Q2 2025 |
+| v0.1.0-alpha.2 | Authentication services and frontend | Q3 2025 |
+| v0.1.0-alpha.3 | AWS cloud provider integration | Q3 2025 |
+| v0.1.0-beta.1 | Multi-cloud support and HIPAA compliance | Q4 2025 |
+| v0.1.0 | First stable release | Q1 2026 |
+
+See the [Release Roadmap](./docs/release-roadmap.md) for comprehensive details on upcoming releases.
 
 ## What is SafetyPin?
 
@@ -298,14 +314,14 @@ SafetyPin follows a GitFlow-inspired branching strategy:
 
 ### Current Development Priorities
 
-Current development priorities (as of March 2025) are:
+Current development priorities (as of March 2025) are focused on completing the v0.1.0-alpha.1 release:
 
-1. Implementing the service layer for authentication (User, Auth, SSO, MFA services)
-2. Defining and implementing API endpoints for core functionality
-3. Implementing cloud integration services (AWS/Azure/GCP)
-4. Developing frontend authentication components
+1. Fixing TypeScript typing issues in repositories and completing test coverage
+2. Implementing the service layer for authentication (User, Auth, SSO, MFA services)
+3. Defining and implementing API endpoints for core functionality
+4. Implementing initial AWS cloud integration service
 
-If you'd like to contribute, please focus on these areas. See the [Project Todos](./docs/project-todos.md) file for the most up-to-date list of tasks.
+If you'd like to contribute, please focus on these areas. See the [Project Todos](./docs/project-todos.md) file for the most up-to-date list of tasks and the [Release Roadmap](./docs/release-roadmap.md) for longer-term planning.
 
 ## Core Features
 

@@ -2,6 +2,8 @@
 
 This is a comprehensive consolidated to-do list for the SafetyPin OSS project, organized by components and priorities.
 
+> **Note**: A detailed release roadmap has been created to track the project's progress and future plans. See [Release Roadmap](./release-roadmap.md) for more information about release versions and timelines.
+
 ## Completed Tasks
 
 0. **OSS/Commercial Edition Separation**
@@ -252,11 +254,20 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 
 ## Next Immediate Steps
 
+**Working toward v0.1.0-alpha.1 release:**
+
 1. Fix TypeScript typing issues in repositories to make tests pass
 2. Complete test coverage for all repositories using the TDD approach
 3. Create authentication services that utilize repositories (User Service, Auth Service, SSO Service, MFA Service) 
 4. Define and implement API endpoints for core functionality 
-5. Implement the cloud integration services for AWS/Azure/GCP
+5. Implement initial cloud integration service for AWS
+
+**Future milestones (v0.1.0-alpha.2 and beyond):**
+
+1. Complete authentication UI components in the frontend
+2. Implement SSO and MFA functionality
+3. Extend cloud integration for Azure and GCP
+4. Implement HIPAA compliance features
 
 ## Troubleshooting Notes
 

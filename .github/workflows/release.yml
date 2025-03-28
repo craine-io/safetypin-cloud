@@ -1,0 +1,101 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger workflow on version tags (e.g., v0.1.0-alpha.1)
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: |
+          npm ci
+          cd safetypin-backend && npm ci
+          cd ../safetypin-frontend && npm ci
+          
+      - name: Run Tests
+        run: npm test
+        
+      - name: Extract Version from Tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        
+      - name: Parse Release Type
+        id: parse_release
+        run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+          if [[ "$VERSION" == *"-alpha"* ]]; then
+            echo "RELEASE_TYPE=Alpha" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+          elif [[ "$VERSION" == *"-beta"* ]]; then
+            echo "RELEASE_TYPE=Beta" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+          elif [[ "$VERSION" == *"-rc"* ]]; then
+            echo "RELEASE_TYPE=Release Candidate" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+          else
+            echo "RELEASE_TYPE=Stable Release" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Generate Release Notes
+        id: generate_release_notes
+        run: |
+          # Get the latest release tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          # If there's a previous tag, generate changelog based on commits between tags
+          if [ -n "$LATEST_TAG" ]; then
+            echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+            echo "## Changes since $LATEST_TAG" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            git log $LATEST_TAG..HEAD --pretty=format:"- %s (%h)" --reverse | grep -v "Merge branch" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            # No previous tag, generate changelog based on all commits
+            echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+            echo "## Initial Release" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            git log --pretty=format:"- %s (%h)" --reverse | grep -v "Merge branch" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "SafetyPin ${{ steps.parse_release.outputs.RELEASE_TYPE }} v${{ steps.get_version.outputs.VERSION }}"
+          body: |
+            # SafetyPin v${{ steps.get_version.outputs.VERSION }}
+            
+            ${{ steps.parse_release.outputs.RELEASE_TYPE }} release of SafetyPin Cloud.
+            
+            ${{ steps.generate_release_notes.outputs.CHANGELOG }}
+            
+            ## Documentation
+            - [Release Roadmap](https://github.com/${{ github.repository }}/blob/main/docs/release-roadmap.md)
+            - [Project Todos](https://github.com/${{ github.repository }}/blob/main/docs/project-todos.md)
+            
+            ## Installation
+            
+            See the [README](https://github.com/${{ github.repository }}/blob/main/README.md) for installation instructions.
+          prerelease: ${{ steps.parse_release.outputs.PRERELEASE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

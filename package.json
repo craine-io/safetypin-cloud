@@ -1,4 +1,22 @@
 {
+  "name": "safetypin-cloud",
+  "version": "0.1.0-alpha.1-dev",
+  "description": "SafetyPin - A secure file transfer solution for ephemeral SFTP connections to cloud storage",
+  "private": true,
+  "workspaces": [
+    "safetypin-frontend",
+    "safetypin-backend",
+    "safetypin-infrastructure"
+  ],
+  "scripts": {
+    "start:frontend": "cd safetypin-frontend && npm run start:alt",
+    "start:backend": "cd safetypin-backend && npm run dev",
+    "test:frontend": "cd safetypin-frontend && npm test",
+    "test:backend": "cd safetypin-backend && npm test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "build": "cd safetypin-backend && npm run build && cd ../safetypin-frontend && npm run build",
+    "release": "node scripts/create-release.js"
+  },
   "devDependencies": {
     "eslint-plugin-simple-import-sort": "^12.1.1"
   }

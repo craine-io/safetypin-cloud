@@ -1,7 +1,7 @@
 {
     "name": "safetypin-frontend",
     "author": "Craine Technology Labs",
-    "version": "0.1.0",
+    "version": "0.1.0-alpha.1-dev",
     "private": true,
     "dependencies": {
       "@aws-amplify/ui-react": "^4.0.0",
