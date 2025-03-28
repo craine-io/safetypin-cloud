@@ -1,6 +1,6 @@
 # SafetyPin Cloud
 
-SafetyPin is a secure file transfer solution that enables users to create ephemeral SFTP connections that route directly to Amazon S3 buckets. The application provides a user-friendly web interface for managing these connections without requiring clients to have AWS knowledge or maintain their own servers.
+SafetyPin is a secure file transfer solution that enables users to create ephemeral SFTP connections that route directly to cloud storage services (AWS S3, Azure Blob Storage, or Google Cloud Storage). The application provides a user-friendly web interface for managing these connections without requiring clients to have cloud provider knowledge or maintain their own servers.
 
 ## Project Status
 
@@ -20,11 +20,12 @@ See the [Project Todos](./docs/project-todos.md) file for a detailed breakdown o
 ## What is SafetyPin?
 
 SafetyPin helps you:
-- Create ephemeral SFTP connections that route directly to S3 buckets
-- Provide secure file transfer capabilities to clients without AWS knowledge
+- Create ephemeral SFTP connections that route directly to cloud storage (AWS S3, Azure Blob Storage, or Google Cloud Storage)
+- Provide secure file transfer capabilities to clients without cloud provider knowledge
 - Keep track of all file transfers and access attempts
 - Manage connections with granular security controls and expiration dates
-- Store and organize transferred files in your own S3 buckets
+- Store and organize transferred files in your preferred cloud storage
+- Deploy on your preferred cloud provider (AWS, Azure, or GCP)
 
 ## Architecture
 
@@ -349,14 +350,19 @@ If you'd like to contribute, please focus on these areas. See the [Project Todos
    - Support for SAML 2.0 and OIDC
    - Multi-factor authentication
 
-2. **File Storage**:
-   - Amazon S3 for file storage
-   - Configurable bucket policies
-   - Support for multiple cloud providers (AWS, Azure, GCP)
+2. **Multi-Cloud File Storage**:
+   - Amazon S3 for AWS deployments
+   - Azure Blob Storage for Azure deployments
+   - Google Cloud Storage for GCP deployments
+   - Configurable storage policies
+   - Unified interface across all supported cloud providers
 
-3. **SFTP Service**:
-   - AWS Transfer Family for SFTP server provisioning
+3. **Multi-Cloud SFTP Service**:
+   - AWS Transfer Family for AWS deployments
+   - Azure Files SFTP for Azure deployments
+   - GCP SFTP service for GCP deployments
    - Custom identity provider for user management
+   - Consistent user experience regardless of underlying cloud provider
 
 4. **API Layer**:
    - RESTful API design
@@ -378,12 +384,43 @@ If you'd like to contribute, please focus on these areas. See the [Project Todos
 
 1. User registers and logs into the application
 2. User creates a new SFTP connection with security and lifecycle settings
-3. System provisions an ephemeral SFTP server connected to an S3 bucket
+3. System provisions an ephemeral SFTP server connected to the appropriate cloud storage (S3, Azure Blob, or Google Cloud Storage)
 4. User shares connection details with clients
 5. Clients connect to the SFTP server using standard SFTP tools
-6. Files are transferred to/from the S3 bucket
+6. Files are transferred to/from the cloud storage
 7. User monitors transfer activity through the dashboard
 8. Server is terminated based on lifecycle settings
+
+## Multi-Cloud Deployment Architecture
+
+SafetyPin is designed to be fully deployable on multiple cloud platforms with equivalent functionality:
+
+### AWS Deployment
+- AWS Amplify for frontend hosting
+- AWS Lambda for backend functions
+- Amazon S3 for storage
+- AWS Transfer Family for SFTP servers
+- Amazon RDS for PostgreSQL database
+- Amazon Cognito for authentication
+- CloudWatch for monitoring
+
+### Azure Deployment
+- Azure Static Web Apps for frontend hosting
+- Azure Functions for backend functions
+- Azure Blob Storage for file storage
+- Azure Files SFTP for SFTP servers
+- Azure Database for PostgreSQL
+- Azure Active Directory for authentication
+- Azure Monitor for monitoring
+
+### Google Cloud Platform Deployment
+- Google Cloud Storage for static hosting
+- Google Cloud Functions for backend functions
+- Google Cloud Storage for file storage
+- GCP SFTP service for SFTP servers
+- Google Cloud SQL for PostgreSQL database
+- Firebase Authentication for authentication
+- Google Cloud Monitoring for observability
 
 ## Edition-Specific Features
 
