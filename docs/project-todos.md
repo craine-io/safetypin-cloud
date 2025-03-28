@@ -1,3 +1,11 @@
+## Current In-Progress Tasks
+
+1. **Frontend-Backend Integration Improvements**
+   - 🔄 Fixing remaining errors in frontend components when using API data
+   - 🔄 Replacing hardcoded mock data in remaining components (transfers, recent activity, etc.)
+   - 🔄 Improving error handling and display for network issues
+   - 🔄 Ensuring proper data format compatibility between backend and frontend
+
 # SafetyPin OSS Project To-Do List
 
 This is a comprehensive consolidated to-do list for the SafetyPin OSS project, organized by components and priorities.
