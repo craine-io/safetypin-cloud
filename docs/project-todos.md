@@ -46,7 +46,11 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
      - ✅ Audit Repository
      - ✅ Permission Repository
      - ✅ Cloud Provider Repository
-   - ⬜ Add comprehensive test coverage for all repositories
+   - 🔄 Add comprehensive test coverage for all repositories:
+     - ✅ Set up testing infrastructure with Jest for backend
+     - ✅ Configure GitHub Actions for automated tests
+     - ✅ Created sample tests for User repository
+     - ⬜ Complete tests for remaining repositories
 
 ## Pending Tasks - Backend
 
@@ -170,6 +174,9 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 ## Pending Tasks - Testing
 
 1. **Backend Testing** (High Priority)
+   - ✅ Set up Jest configuration for backend
+   - ✅ Configure GitHub Actions workflow for CI
+   - ✅ Create database mocking utilities
    - ⬜ Create automated tests for SSO authentication flows
    - ⬜ Test MFA enrollment and verification processes
    - ⬜ Verify session management and timeout functionality
@@ -183,6 +190,8 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
      - ⬜ Implement cross-provider compatibility tests
 
 2. **Frontend Testing** (Medium Priority)
+   - ✅ Set up Jest for React components
+   - ✅ Configure testing utilities
    - ⬜ Implement component tests
    - ⬜ Create integration tests
    - ⬜ Build end-to-end tests
@@ -190,7 +199,7 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 ## Pending Tasks - DevOps
 
 1. **CI/CD Pipeline** (Medium Priority)
-   - ⬜ Set up automated testing
+   - ✅ Set up automated testing with GitHub Actions
    - ⬜ Configure build pipeline
    - ⬜ Implement deployment automation
    - ⬜ Add security scanning
@@ -237,10 +246,11 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 
 ## Next Immediate Steps
 
-1. Create authentication services that utilize repositories (User Service, Auth Service, SSO Service, MFA Service) 
-2. Define and implement API endpoints for core functionality 
-3. Implement the cloud integration services for AWS/Azure/GCP
-4. Begin developing the frontend authentication components
+1. Complete test coverage for all repositories using the TDD approach
+2. Create authentication services that utilize repositories (User Service, Auth Service, SSO Service, MFA Service) 
+3. Define and implement API endpoints for core functionality 
+4. Implement the cloud integration services for AWS/Azure/GCP
+5. Begin developing the frontend authentication components
 
 ## Troubleshooting Notes
 
@@ -271,3 +281,10 @@ This is a comprehensive consolidated to-do list for the SafetyPin OSS project, o
 - Use type guards (e.g., `typeof err === 'object' && err !== null && 'property' in err`) to safely access properties
 - When using API methods that require `Record<string, unknown>`, you may need to cast custom interfaces using `as unknown as Record<string, unknown>`
 - Run `npm run type-check` regularly to catch type issues before they cause runtime problems
+
+### Running Tests
+
+- Backend tests: Run `cd safetypin-backend && npm test`
+- Frontend tests: Run `cd safetypin-frontend && npm test`
+- Run with coverage: `npm test -- --coverage` 
+- To run specific tests: `npm test -- -t "test name pattern"`
