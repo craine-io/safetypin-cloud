@@ -52,8 +52,8 @@ class ApiService {
     console.log('Checking if we should use mock data...');
     console.log('REACT_APP_USE_MOCK_DATA:', process.env.REACT_APP_USE_MOCK_DATA);
 
-    // Always use real API data for development troubleshooting
-    return false;
+    // Return true only if explicitly set in environment variables
+    return process.env.REACT_APP_USE_MOCK_DATA === 'true';
   }
 
   /**
@@ -70,11 +70,26 @@ class ApiService {
    */
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try {
+      console.log(`Making GET request to: ${this.client.defaults.baseURL}${url}`);
       const response = await this.client.get<T>(url, config);
       console.log(`GET ${url} success:`, response.data);
       return response.data;
     } catch (error) {
       console.error(`GET ${url} error:`, error);
+      // Add more details about the error for easier debugging
+      if (typeof error === 'object' && error !== null) {
+        if ('response' in error && error.response) {
+          console.error('Response error details:', {
+            status: error.response.status,
+            statusText: error.response.statusText,
+            data: error.response.data,
+          });
+        } else if ('request' in error && error.request) {
+          console.error('Request error (no response received):', error.request);
+        } else if ('message' in error) {
+          console.error('Error message:', error.message);
+        }
+      }
       throw error;
     }
   }

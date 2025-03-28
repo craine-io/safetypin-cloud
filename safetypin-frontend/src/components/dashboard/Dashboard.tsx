@@ -1,59 +1,60 @@
-import React, { useState } from "react";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AddIcon from '@mui/icons-material/Add';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import CloudSyncIcon from '@mui/icons-material/CloudSync';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import DonutLargeIcon from '@mui/icons-material/DonutLarge';
+import EditIcon from '@mui/icons-material/Edit';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
+import LaunchIcon from '@mui/icons-material/Launch';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import PublicIcon from '@mui/icons-material/Public';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import SecurityIcon from '@mui/icons-material/Security';
+// Icons
+import StorageIcon from '@mui/icons-material/Storage';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
+  alpha,
+  Avatar,
   Box,
-  Container,
-  Grid,
-  Paper,
-  Typography,
+  Button,
   Card,
   CardContent,
   CardHeader,
+  Chip,
+  Container,
   Divider,
+  Grid,
+  IconButton,
+  LinearProgress,
   List,
   ListItem,
-  ListItemText,
+  ListItemIcon,
   ListItemSecondaryAction,
-  Chip,
-  LinearProgress,
-  IconButton,
-  Button,
-  useTheme,
-  alpha,
-  Avatar,
+  ListItemText,
   Menu,
   MenuItem,
-  ListItemIcon,
+  Paper,
+  Stack,
   Tooltip,
-  Stack
-} from "@mui/material";
-import { useAuth } from "../auth/AuthContext";
-import PageHeader from "../layout/PageHeader";
-import { useNavigate } from "react-router-dom";
+  Typography,
+  useTheme,
+} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-// Icons
-import StorageIcon from "@mui/icons-material/Storage";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import CloudSyncIcon from "@mui/icons-material/CloudSync";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AddIcon from "@mui/icons-material/Add";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DonutLargeIcon from "@mui/icons-material/DonutLarge";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import EditIcon from "@mui/icons-material/Edit";
-import LaunchIcon from "@mui/icons-material/Launch";
-import SecurityIcon from "@mui/icons-material/Security";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import PublicIcon from "@mui/icons-material/Public";
+import { useServers } from '../../hooks/useServers';
+import { useAuth } from '../auth/AuthContext';
+import PageHeader from '../layout/PageHeader';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -61,6 +62,20 @@ const Dashboard: React.FC = () => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
+
+  // Use the servers hook to fetch servers from API
+  const {
+    servers: apiServers,
+    loading: serversLoading,
+    error: serversError,
+    fetchServers,
+  } = useServers();
+
+  // Fetch servers when component mounts
+  useEffect(() => {
+    fetchServers();
+    console.log('Fetching servers for dashboard from API');
+  }, [fetchServers]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, serverId: string) => {
     setAnchorEl(event.currentTarget);
@@ -72,146 +87,106 @@ const Dashboard: React.FC = () => {
     setSelectedServerId(null);
   };
 
-  // Mock data for the dashboard
+  // Mock data for the dashboard stats (will be replaced with real API data in future)
   const stats = [
     {
-      title: "Total Servers",
-      value: "12",
-      change: "+3",
-      changePercent: "+33%",
-      trend: "up",
+      title: 'Total Servers',
+      value: '12',
+      change: '+3',
+      changePercent: '+33%',
+      trend: 'up',
       icon: <StorageIcon />,
       color: theme.palette.primary.main,
     },
     {
-      title: "Files Uploaded",
-      value: "1,284",
-      change: "+128",
-      changePercent: "+11%",
-      trend: "up",
+      title: 'Files Uploaded',
+      value: '1,284',
+      change: '+128',
+      changePercent: '+11%',
+      trend: 'up',
       icon: <CloudUploadIcon />,
       color: theme.palette.info.main,
     },
     {
-      title: "Files Downloaded",
-      value: "842",
-      change: "-21",
-      changePercent: "-2.4%",
-      trend: "down",
+      title: 'Files Downloaded',
+      value: '842',
+      change: '-21',
+      changePercent: '-2.4%',
+      trend: 'down',
       icon: <CloudDownloadIcon />,
       color: theme.palette.secondary.main,
     },
     {
-      title: "Active Transfers",
-      value: "5",
-      change: "+2",
-      changePercent: "+66%",
-      trend: "up",
+      title: 'Active Transfers',
+      value: '5',
+      change: '+2',
+      changePercent: '+66%',
+      trend: 'up',
       icon: <CloudSyncIcon />,
       color: theme.palette.warning.main,
     },
   ];
 
-  const servers = [
-    {
-      id: "srv-001",
-      name: "Production Server",
-      host: "prod.sftp.example.com",
-      status: "Online",
-      storageUsed: 85,
-      lastActive: "10 minutes ago",
-      region: "us-east-1",
-      expiresIn: "6 days"
-    },
-    {
-      id: "srv-002",
-      name: "Development Server",
-      host: "dev.sftp.example.com",
-      status: "Online",
-      storageUsed: 42,
-      lastActive: "3 hours ago",
-      region: "us-west-2",
-      expiresIn: "14 days"
-    },
-    {
-      id: "srv-003",
-      name: "Testing Server",
-      host: "test.sftp.example.com",
-      status: "Offline",
-      storageUsed: 0,
-      lastActive: "2 days ago",
-      region: "eu-west-1",
-      expiresIn: "30 days"
-    },
-    {
-      id: "srv-004",
-      name: "Backup Server",
-      host: "backup.sftp.example.com",
-      status: "Online",
-      storageUsed: 67,
-      lastActive: "5 hours ago",
-      region: "us-east-2",
-      expiresIn: "21 days"
-    },
-  ];
+  // Use servers data from API or fallback to empty array
+  const servers = apiServers || [];
 
   const recentTransfers = [
     {
-      id: "tr-001",
-      filename: "quarterly-report.pdf",
-      server: "Production Server",
-      serverId: "srv-001",
-      direction: "upload",
-      timestamp: "10 minutes ago",
-      size: "4.2 MB",
-      user: "john.doe@example.com",
+      id: 'tr-001',
+      filename: 'quarterly-report.pdf',
+      server: 'Production Server',
+      serverId: 'srv-001',
+      direction: 'upload',
+      timestamp: '10 minutes ago',
+      size: '4.2 MB',
+      user: 'john.doe@example.com',
     },
     {
-      id: "tr-002",
-      filename: "client-data.csv",
-      server: "Development Server",
-      serverId: "srv-002",
-      direction: "download",
-      timestamp: "25 minutes ago",
-      size: "1.8 MB",
-      user: "jane.smith@example.com",
+      id: 'tr-002',
+      filename: 'client-data.csv',
+      server: 'Development Server',
+      serverId: 'srv-002',
+      direction: 'download',
+      timestamp: '25 minutes ago',
+      size: '1.8 MB',
+      user: 'jane.smith@example.com',
     },
     {
-      id: "tr-003",
-      filename: "system-backup.zip",
-      server: "Backup Server",
-      serverId: "srv-004",
-      direction: "upload",
-      timestamp: "1 hour ago",
-      size: "256.4 MB",
-      user: "admin@example.com",
+      id: 'tr-003',
+      filename: 'system-backup.zip',
+      server: 'Backup Server',
+      serverId: 'srv-004',
+      direction: 'upload',
+      timestamp: '1 hour ago',
+      size: '256.4 MB',
+      user: 'admin@example.com',
     },
     {
-      id: "tr-004",
-      filename: "user-profiles.json",
-      server: "Production Server",
-      serverId: "srv-001",
-      direction: "download",
-      timestamp: "3 hours ago",
-      size: "782 KB",
-      user: "john.doe@example.com",
+      id: 'tr-004',
+      filename: 'user-profiles.json',
+      server: 'Production Server',
+      serverId: 'srv-001',
+      direction: 'download',
+      timestamp: '3 hours ago',
+      size: '782 KB',
+      user: 'john.doe@example.com',
     },
   ];
 
   return (
     <Container maxWidth="xl">
-      <PageHeader 
-        title="Dashboard" 
+      <PageHeader
+        title="Dashboard"
         subtitle="Monitor your SFTP servers and file transfers"
         action={{
-          text: "New Server",
+          text: 'New Server',
           icon: <AddIcon />,
-          onClick: () => navigate("/servers/new")
+          onClick: () => navigate('/servers/new'),
         }}
         showRefresh
-        onRefresh={() => console.log("Refreshed dashboard")}
+        onRefresh={() => console.log('Refreshed dashboard')}
       />
-      
+
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
@@ -228,7 +203,7 @@ const Dashboard: React.FC = () => {
                   boxShadow: `0px 8px 24px ${alpha(stat.color, 0.15)}`,
                   transform: 'translateY(-5px)',
                   borderColor: alpha(stat.color, 0.5),
-                }
+                },
               }}
             >
               <Box sx={{ mb: 2 }}>
@@ -251,16 +226,26 @@ const Dashboard: React.FC = () => {
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                 <Chip
-                  icon={stat.trend === "up" ? <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />}
+                  icon={
+                    stat.trend === 'up' ? (
+                      <ArrowUpwardIcon fontSize="small" />
+                    ) : (
+                      <ArrowDownwardIcon fontSize="small" />
+                    )
+                  }
                   label={stat.changePercent}
                   size="small"
                   sx={{
-                    bgcolor: alpha(stat.trend === "up" ? theme.palette.success.main : theme.palette.error.main, 0.1),
-                    color: stat.trend === "up" ? theme.palette.success.dark : theme.palette.error.dark,
+                    bgcolor: alpha(
+                      stat.trend === 'up' ? theme.palette.success.main : theme.palette.error.main,
+                      0.1
+                    ),
+                    color:
+                      stat.trend === 'up' ? theme.palette.success.dark : theme.palette.error.dark,
                     fontWeight: 600,
                     '& .MuiChip-icon': {
                       color: 'inherit',
-                    }
+                    },
                   }}
                 />
                 <Typography variant="caption" color="text.secondary" ml={1}>
@@ -277,26 +262,34 @@ const Dashboard: React.FC = () => {
         <Grid item xs={12} lg={8}>
           <Paper
             elevation={0}
-            sx={{ 
-              borderRadius: 4, 
+            sx={{
+              borderRadius: 4,
               overflow: 'hidden',
               border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
               height: '100%',
             }}
           >
-            <Box sx={{ px: 3, py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box
+              sx={{
+                px: 3,
+                py: 2,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <Typography variant="h6" fontWeight="bold">
                 SFTP Servers
               </Typography>
-              <Button 
-                variant="outlined" 
-                size="small" 
+              <Button
+                variant="outlined"
+                size="small"
                 startIcon={<AddIcon />}
-                onClick={() => navigate("/servers/new")}
-                sx={{ 
+                onClick={() => navigate('/servers/new')}
+                sx={{
                   borderRadius: '8px',
                   textTransform: 'none',
-                  fontWeight: 500
+                  fontWeight: 500,
                 }}
               >
                 Add Server
@@ -304,7 +297,27 @@ const Dashboard: React.FC = () => {
             </Box>
             <Divider />
             <Box sx={{ overflow: 'auto', maxHeight: { xs: 400, md: 500 } }}>
-              {servers.length === 0 ? (
+              {serversLoading ? (
+                <Box sx={{ p: 4, textAlign: 'center' }}>
+                  <Typography variant="body1" color="text.secondary">
+                    Loading servers...
+                  </Typography>
+                </Box>
+              ) : serversError ? (
+                <Box sx={{ p: 4, textAlign: 'center' }}>
+                  <Typography variant="body1" color="error">
+                    {serversError}
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    onClick={fetchServers}
+                    startIcon={<RefreshIcon />}
+                    sx={{ mt: 2 }}
+                  >
+                    Retry
+                  </Button>
+                </Box>
+              ) : servers.length === 0 ? (
                 <Box sx={{ p: 4, textAlign: 'center' }}>
                   <Typography variant="body1" color="text.secondary">
                     No servers configured yet. Create your first SFTP server.
@@ -313,7 +326,7 @@ const Dashboard: React.FC = () => {
                     variant="contained"
                     color="primary"
                     startIcon={<AddIcon />}
-                    onClick={() => navigate("/servers/new")}
+                    onClick={() => navigate('/servers/new')}
                     sx={{ mt: 2 }}
                   >
                     New Server
@@ -321,12 +334,17 @@ const Dashboard: React.FC = () => {
                 </Box>
               ) : (
                 <List sx={{ py: 0 }}>
-                  {servers.map((server) => (
+                  {servers.map(server => (
                     <React.Fragment key={server.id}>
                       <ListItem sx={{ px: 3, py: 2 }}>
                         <Grid container spacing={2} alignItems="center">
                           <Grid item>
-                            <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main' }}>
+                            <Avatar
+                              sx={{
+                                bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                color: 'primary.main',
+                              }}
+                            >
                               <StorageIcon />
                             </Avatar>
                           </Grid>
@@ -341,34 +359,40 @@ const Dashboard: React.FC = () => {
                             </Grid>
                             <Grid item xs={6} sm={3} md={3}>
                               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <PublicIcon 
-                                  sx={{ 
-                                    fontSize: 14, 
+                                <PublicIcon
+                                  sx={{
+                                    fontSize: 14,
                                     mr: 0.5,
-                                    color: 'text.secondary'
-                                  }} 
+                                    color: 'text.secondary',
+                                  }}
                                 />
                                 <Typography variant="body2" color="text.secondary">
-                                  {server.region}
+                                  {server.region || 'No region'}
                                 </Typography>
                               </Box>
                               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <AccessTimeIcon 
-                                  sx={{ 
-                                    fontSize: 14, 
+                                <AccessTimeIcon
+                                  sx={{
+                                    fontSize: 14,
                                     mr: 0.5,
-                                    color: 'text.secondary'
-                                  }} 
+                                    color: 'text.secondary',
+                                  }}
                                 />
                                 <Typography variant="body2" color="text.secondary">
-                                  {server.expiresIn}
+                                  {server.expiryTime
+                                    ? `Expires: ${new Date(server.expiryTime).toLocaleDateString()}`
+                                    : 'No expiry'}
                                 </Typography>
                               </Box>
                             </Grid>
                             <Grid item xs={6} sm={4} md={5}>
                               <Box sx={{ mt: 0.5 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                                  <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1, mr: 1 }}>
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ flexGrow: 1, mr: 1 }}
+                                  >
                                     Storage: {server.storageUsed}%
                                   </Typography>
                                 </Box>
@@ -382,11 +406,13 @@ const Dashboard: React.FC = () => {
                                     backgroundColor: alpha(theme.palette.grey[300], 0.5),
                                     '& .MuiLinearProgress-bar': {
                                       borderRadius: 3,
-                                      backgroundColor: 
-                                        server.storageUsed > 90 ? theme.palette.error.main :
-                                        server.storageUsed > 70 ? theme.palette.warning.main :
-                                        theme.palette.success.main,
-                                    }
+                                      backgroundColor:
+                                        server.storageUsed > 90
+                                          ? theme.palette.error.main
+                                          : server.storageUsed > 70
+                                          ? theme.palette.warning.main
+                                          : theme.palette.success.main,
+                                    },
                                   }}
                                 />
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -396,34 +422,34 @@ const Dashboard: React.FC = () => {
                                     sx={{
                                       height: 20,
                                       fontSize: '0.7rem',
-                                      bgcolor: 
-                                        server.status === "Online" 
+                                      bgcolor:
+                                        server.status === 'Online'
                                           ? alpha(theme.palette.success.main, 0.1)
                                           : alpha(theme.palette.error.main, 0.1),
-                                      color: 
-                                        server.status === "Online" 
+                                      color:
+                                        server.status === 'Online'
                                           ? theme.palette.success.dark
                                           : theme.palette.error.dark,
                                     }}
                                   />
                                   <Typography variant="caption" color="text.secondary">
-                                    Last active: {server.lastActive}
+                                    Last active: {server.lastConnection}
                                   </Typography>
                                 </Box>
                               </Box>
                             </Grid>
                           </Grid>
                           <Grid item>
-                            <IconButton 
-                              edge="end" 
-                              onClick={(e) => handleMenuClick(e, server.id)}
+                            <IconButton
+                              edge="end"
+                              onClick={e => handleMenuClick(e, server.id)}
                               size="small"
-                              sx={{ 
+                              sx={{
                                 color: 'text.secondary',
                                 bgcolor: alpha(theme.palette.grey[500], 0.08),
                                 '&:hover': {
                                   bgcolor: alpha(theme.palette.grey[500], 0.15),
-                                }
+                                },
                               }}
                             >
                               <MoreVertIcon fontSize="small" />
@@ -438,9 +464,9 @@ const Dashboard: React.FC = () => {
               )}
             </Box>
             <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
-              <Button 
-                color="primary" 
-                onClick={() => navigate("/servers")}
+              <Button
+                color="primary"
+                onClick={() => navigate('/servers')}
                 endIcon={<VisibilityIcon />}
                 sx={{ textTransform: 'none' }}
               >
@@ -454,13 +480,13 @@ const Dashboard: React.FC = () => {
         <Grid item xs={12} lg={4}>
           <Paper
             elevation={0}
-            sx={{ 
-              borderRadius: 4, 
+            sx={{
+              borderRadius: 4,
               overflow: 'hidden',
               border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
               height: '100%',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
             }}
           >
             <Box sx={{ px: 3, py: 2 }}>
@@ -471,63 +497,58 @@ const Dashboard: React.FC = () => {
             <Divider />
             <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
               <List sx={{ p: 0 }}>
-                {recentTransfers.map((transfer) => (
-                  <ListItem 
+                {recentTransfers.map(transfer => (
+                  <ListItem
                     key={transfer.id}
                     alignItems="flex-start"
-                    sx={{ 
-                      px: 3, 
-                      py: 2, 
+                    sx={{
+                      px: 3,
+                      py: 2,
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        bgcolor: alpha(theme.palette.primary.main, 0.03)
-                      }
+                        bgcolor: alpha(theme.palette.primary.main, 0.03),
+                      },
                     }}
                   >
                     <Box sx={{ display: 'flex', width: '100%' }}>
-                      <Avatar 
-                        sx={{ 
-                          width: 40, 
-                          height: 40, 
+                      <Avatar
+                        sx={{
+                          width: 40,
+                          height: 40,
                           mr: 2,
-                          bgcolor: 
-                            transfer.direction === "upload" 
-                              ? alpha(theme.palette.primary.main, 0.1) 
+                          bgcolor:
+                            transfer.direction === 'upload'
+                              ? alpha(theme.palette.primary.main, 0.1)
                               : alpha(theme.palette.info.main, 0.1),
-                          color: 
-                            transfer.direction === "upload" 
-                              ? theme.palette.primary.main 
-                              : theme.palette.info.main
+                          color:
+                            transfer.direction === 'upload'
+                              ? theme.palette.primary.main
+                              : theme.palette.info.main,
                         }}
                       >
-                        {transfer.direction === "upload" ? (
+                        {transfer.direction === 'upload' ? (
                           <CloudUploadIcon fontSize="small" />
                         ) : (
                           <CloudDownloadIcon fontSize="small" />
                         )}
                       </Avatar>
                       <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
-                        <Typography 
-                          variant="subtitle2" 
-                          fontWeight={600} 
-                          noWrap
-                          sx={{ mb: 0.5 }}
-                        >
+                        <Typography variant="subtitle2" fontWeight={600} noWrap sx={{ mb: 0.5 }}>
                           {transfer.filename}
                         </Typography>
                         <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
                           <Chip
-                            label={transfer.direction === "upload" ? "Uploaded" : "Downloaded"}
+                            label={transfer.direction === 'upload' ? 'Uploaded' : 'Downloaded'}
                             size="small"
                             sx={{
                               height: 20,
                               fontSize: '0.7rem',
-                              bgcolor: 
-                                transfer.direction === "upload" 
+                              bgcolor:
+                                transfer.direction === 'upload'
                                   ? alpha(theme.palette.primary.main, 0.1)
                                   : alpha(theme.palette.info.main, 0.1),
-                              color: 
-                                transfer.direction === "upload" 
+                              color:
+                                transfer.direction === 'upload'
                                   ? theme.palette.primary.main
                                   : theme.palette.info.main,
                             }}
@@ -537,13 +558,28 @@ const Dashboard: React.FC = () => {
                           </Typography>
                         </Stack>
                         <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
-                          <Typography variant="body2" component="span" color="text.secondary" noWrap>
+                          <Typography
+                            variant="body2"
+                            component="span"
+                            color="text.secondary"
+                            noWrap
+                          >
                             {transfer.server}
                           </Typography>
-                          <Typography variant="body2" component="span" color="text.secondary" sx={{ mx: 0.5 }}>
+                          <Typography
+                            variant="body2"
+                            component="span"
+                            color="text.secondary"
+                            sx={{ mx: 0.5 }}
+                          >
                             •
                           </Typography>
-                          <Typography variant="body2" component="span" color="text.secondary" noWrap>
+                          <Typography
+                            variant="body2"
+                            component="span"
+                            color="text.secondary"
+                            noWrap
+                          >
                             {transfer.timestamp}
                           </Typography>
                         </Box>
@@ -555,23 +591,19 @@ const Dashboard: React.FC = () => {
             </Box>
             <Divider />
             <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
-              <Button 
-                color="primary" 
-                endIcon={<VisibilityIcon />}
-                sx={{ textTransform: 'none' }}
-              >
+              <Button color="primary" endIcon={<VisibilityIcon />} sx={{ textTransform: 'none' }}>
                 View All Transfers
               </Button>
             </Box>
           </Paper>
         </Grid>
-        
+
         {/* Quick Actions */}
         <Grid item xs={12}>
           <Paper
             elevation={0}
-            sx={{ 
-              borderRadius: 4, 
+            sx={{
+              borderRadius: 4,
               p: 3,
               border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
             }}
@@ -585,7 +617,7 @@ const Dashboard: React.FC = () => {
                   variant="outlined"
                   fullWidth
                   startIcon={<AddIcon />}
-                  onClick={() => navigate("/servers/new")}
+                  onClick={() => navigate('/servers/new')}
                   sx={{
                     p: 2,
                     flexDirection: 'column',
@@ -598,7 +630,7 @@ const Dashboard: React.FC = () => {
                       borderWidth: '2px',
                       borderColor: theme.palette.primary.main,
                       bgcolor: alpha(theme.palette.primary.main, 0.03),
-                    }
+                    },
                   }}
                 >
                   <Box sx={{ fontSize: '1.75rem', color: 'primary.main', mb: 1 }}>
@@ -614,7 +646,7 @@ const Dashboard: React.FC = () => {
                   variant="outlined"
                   fullWidth
                   startIcon={<SecurityIcon />}
-                  onClick={() => navigate("/security")}
+                  onClick={() => navigate('/security')}
                   sx={{
                     p: 2,
                     flexDirection: 'column',
@@ -627,7 +659,7 @@ const Dashboard: React.FC = () => {
                       borderWidth: '2px',
                       borderColor: theme.palette.info.main,
                       bgcolor: alpha(theme.palette.info.main, 0.03),
-                    }
+                    },
                   }}
                 >
                   <Box sx={{ fontSize: '1.75rem', color: 'info.main', mb: 1 }}>
@@ -655,7 +687,7 @@ const Dashboard: React.FC = () => {
                       borderWidth: '2px',
                       borderColor: theme.palette.warning.main,
                       bgcolor: alpha(theme.palette.warning.main, 0.03),
-                    }
+                    },
                   }}
                 >
                   <Box sx={{ fontSize: '1.75rem', color: 'warning.main', mb: 1 }}>
@@ -683,7 +715,7 @@ const Dashboard: React.FC = () => {
                       borderWidth: '2px',
                       borderColor: theme.palette.success.main,
                       bgcolor: alpha(theme.palette.success.main, 0.03),
-                    }
+                    },
                   }}
                 >
                   <Box sx={{ fontSize: '1.75rem', color: 'success.main', mb: 1 }}>
@@ -698,7 +730,7 @@ const Dashboard: React.FC = () => {
           </Paper>
         </Grid>
       </Grid>
-      
+
       {/* Server Actions Menu */}
       <Menu
         anchorEl={anchorEl}
@@ -717,7 +749,7 @@ const Dashboard: React.FC = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem 
+        <MenuItem
           onClick={() => {
             handleMenuClose();
             navigate(`/web-client/${selectedServerId}`);
@@ -729,7 +761,7 @@ const Dashboard: React.FC = () => {
           </ListItemIcon>
           <ListItemText>Launch Web Client</ListItemText>
         </MenuItem>
-        <MenuItem 
+        <MenuItem
           onClick={() => {
             handleMenuClose();
             navigate(`/servers/${selectedServerId}`);
@@ -741,7 +773,7 @@ const Dashboard: React.FC = () => {
           </ListItemIcon>
           <ListItemText>View Details</ListItemText>
         </MenuItem>
-        <MenuItem 
+        <MenuItem
           onClick={() => {
             handleMenuClose();
             navigate(`/servers/${selectedServerId}`);
@@ -754,10 +786,7 @@ const Dashboard: React.FC = () => {
           <ListItemText>Edit Server</ListItemText>
         </MenuItem>
         <Divider sx={{ my: 1 }} />
-        <MenuItem 
-          onClick={handleMenuClose} 
-          sx={{ color: 'error.main', borderRadius: 1, mx: 0.5 }}
-        >
+        <MenuItem onClick={handleMenuClose} sx={{ color: 'error.main', borderRadius: 1, mx: 0.5 }}>
           <ListItemIcon>
             <DeleteOutlineIcon fontSize="small" color="error" />
           </ListItemIcon>

@@ -68,6 +68,39 @@ const APITest: React.FC = () => {
     }
   };
 
+  // Test API directly using fetch instead of axios
+  const testApiDirectly = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const apiUrl = `${configuredApiUrl}/health`;
+      console.log('Testing direct API connection to:', apiUrl);
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      console.log('Direct API response:', data);
+      setApiStatus({
+        status: data.status || 'ok',
+        message: 'Direct API connection successful',
+        timestamp: data.timestamp || new Date().toISOString(),
+      });
+    } catch (err: unknown) {
+      console.error('Direct API test error:', err);
+      let errorMessage = 'Failed to connect directly to the API server.';
+
+      // Extract more detailed error information
+      if (err && typeof err === 'object' && 'message' in err) {
+        errorMessage += ` Error: ${err.message}`;
+      }
+
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const testCustomUrl = async () => {
     if (!customUrl) return;
 
@@ -98,6 +131,38 @@ const APITest: React.FC = () => {
           err && typeof err === 'object' && 'message' in err ? err.message : 'Unknown error'
         }`
       );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const testDebugServersEndpoint = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const apiUrl = `${configuredApiUrl}/debug/servers`;
+      console.log('Testing debug servers endpoint:', apiUrl);
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      console.log('Debug servers response:', data);
+      setApiStatus({
+        status: 'ok',
+        message: `Debug servers: Found ${data.serverCount} servers`,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err: unknown) {
+      console.error('Debug servers endpoint error:', err);
+      let errorMessage = 'Failed to connect to debug servers endpoint.';
+
+      // Extract more detailed error information
+      if (err && typeof err === 'object' && 'message' in err) {
+        errorMessage += ` Error: ${err.message}`;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -140,6 +205,11 @@ const APITest: React.FC = () => {
               <strong>Node Environment:</strong> {process.env.NODE_ENV}
             </Typography>
           </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2">
+              <strong>Docker Config API URL:</strong> {isDocker ? 'http://backend:3000' : 'N/A'}
+            </Typography>
+          </Grid>
         </Grid>
       </Box>
 
@@ -166,9 +236,17 @@ const APITest: React.FC = () => {
         </Alert>
       )}
 
-      <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+      <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
         <Button variant="contained" onClick={checkAPIStatus} disabled={loading}>
-          Test Configured API
+          Test API Service
+        </Button>
+
+        <Button variant="outlined" onClick={testApiDirectly} disabled={loading}>
+          Direct API Test
+        </Button>
+
+        <Button variant="outlined" onClick={testDebugServersEndpoint} disabled={loading}>
+          Test Debug Servers
         </Button>
 
         <Button
@@ -247,8 +325,9 @@ const APITest: React.FC = () => {
           <Alert severity="info" sx={{ mt: 2 }}>
             <Typography variant="body2">
               In Docker development environment, the API is configured to use{' '}
-              <strong>localhost:3000</strong> for docker-compose compatibility. If the API is not
-              responding, ensure the backend container is running and ports are correctly mapped.
+              <strong>backend:3000</strong> for docker-compose communication. If the API is not
+              responding, ensure the backend container is running and properly networked with the
+              frontend.
             </Typography>
           </Alert>
         )}
