@@ -13,12 +13,12 @@ jobs:
       contents: write
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
         
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
@@ -78,8 +78,8 @@ jobs:
             echo "EOF" >> $GITHUB_OUTPUT
           fi
           
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
         with:
           name: "SafetyPin ${{ steps.parse_release.outputs.RELEASE_TYPE }} v${{ steps.get_version.outputs.VERSION }}"
           body: |
@@ -96,6 +96,6 @@ jobs:
             ## Installation
             
             See the [README](https://github.com/${{ github.repository }}/blob/main/README.md) for installation instructions.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
           prerelease: ${{ steps.parse_release.outputs.PRERELEASE }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
