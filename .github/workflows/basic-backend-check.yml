@@ -1,0 +1,43 @@
+name: Basic Backend Check
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'safetypin-backend/**'
+      - '.github/workflows/basic-backend-check.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'safetypin-backend/**'
+      - '.github/workflows/basic-backend-check.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'safetypin-backend/package-lock.json'
+      
+      - name: Install dependencies
+        run: npm install --no-package-lock
+        working-directory: ./safetypin-backend
+      
+      - name: Check code syntax
+        run: npx eslint --no-eslintrc --parser-options=ecmaVersion:2021 --parser @typescript-eslint/parser --plugin @typescript-eslint --rule '{\"@typescript-eslint/no-unused-vars\":\"error\"}' ./src
+        working-directory: ./safetypin-backend
+      
+      - name: Run basic tests
+        run: npm test
+        working-directory: ./safetypin-backend
+        env:
+          DATABASE_URL: postgres://fake:fake@localhost:5432/fake_db
+          NODE_ENV: test
+          JWT_SECRET: test-secret

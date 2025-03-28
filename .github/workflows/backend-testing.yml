@@ -42,7 +42,7 @@ jobs:
           cache-dependency-path: 'safetypin-backend/package-lock.json'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./safetypin-backend
       
       - name: Lint
