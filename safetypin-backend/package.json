@@ -12,7 +12,9 @@
     "migrate:up": "ts-node src/lib/database/migrator.ts up",
     "migrate:down": "ts-node src/lib/database/migrator.ts down",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "fix:unused-vars": "node fix-unused-vars.js",
+    "fix:all": "node fix-lint.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1000.0",

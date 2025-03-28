@@ -1,0 +1,19 @@
+# Node modules
+node_modules/
+
+# Build directory
+dist/
+
+# Coverage directory
+coverage/
+
+# Config files
+*.config.js
+.eslintrc.js
+
+# Test fixtures
+**/__fixtures__/**
+
+# Package files
+package.json
+package-lock.json
