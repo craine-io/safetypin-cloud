@@ -46,7 +46,7 @@ jobs:
         working-directory: ./safetypin-backend
       
       - name: Lint
-        run: npm run lint
+        run: npm run lint -- --max-warnings=0
         working-directory: ./safetypin-backend
       
       - name: Run tests
